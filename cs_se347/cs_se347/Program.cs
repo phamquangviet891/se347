@@ -9,6 +9,8 @@ namespace cs_se347
         public static MyProduct api_product = new MyProduct();
         public static MyCategory api_category = new MyCategory();
         public static MyShop api_shop = new MyShop();
+        public static MyUser api_user = new MyUser();
+        public static MyCart api_cart = new MyCart();
 
         public static async Task Main(string[] args)
         {

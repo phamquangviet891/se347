@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using cs_se347.Model;
@@ -11,9 +12,10 @@ using cs_se347.Model;
 namespace cs_se347.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231207014347_1.0.7")]
+    partial class _107
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +51,7 @@ namespace cs_se347.Migrations
 
                     b.HasIndex("userID");
 
-                    b.ToTable("tb_cart", (string)null);
+                    b.ToTable("tb_cart");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlCategory", b =>
@@ -70,7 +72,7 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_category", (string)null);
+                    b.ToTable("tb_category");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlProduct", b =>
@@ -138,7 +140,7 @@ namespace cs_se347.Migrations
 
                     b.HasIndex("shopID");
 
-                    b.ToTable("tb_product", (string)null);
+                    b.ToTable("tb_product");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlShop", b =>
@@ -166,7 +168,7 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_shop", (string)null);
+                    b.ToTable("tb_shop");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlUser", b =>
@@ -195,7 +197,7 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_user", (string)null);
+                    b.ToTable("tb_user");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlCart", b =>

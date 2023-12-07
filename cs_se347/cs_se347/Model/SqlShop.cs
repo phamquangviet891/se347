@@ -12,6 +12,10 @@ namespace cs_se347.Model
         public string logo { get; set; }
         public double rating { get; set; }= 4.7;
         public string danh_gia { get; set; }
+    }
 
+    public class Shop
+    {
+        public string name { get; set; }
     }
 }

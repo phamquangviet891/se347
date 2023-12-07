@@ -21,6 +21,8 @@ namespace cs_se347.Model
         public List<string> detail { get; set; } = new List<string>();
         public SqlShop shop { get; set; }
         public SqlCategory category { get; set; }
+        public int inventory { get; set;} = 100;
+
         public bool isDeleted { get; set; } = false;
     }
     public class HomePage_Product
@@ -57,8 +59,8 @@ namespace cs_se347.Model
         public float rating { get; set; } = 0;
         public string productImage { get; set; } = "";
         public List<string> productListImage { get; set; } = new List<string>();
-        public List<string> options { get; set; } = new List<string>();
-        public string description { get; set; } = "";
+        public List<string> options { get; set; } 
+        public string description { get; set; }
         public List<string> detail { get; set; } = new List<string>();
     }
 }

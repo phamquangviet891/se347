@@ -18,7 +18,7 @@ namespace cs_se347.Controllers
         public async Task<IActionResult> getProductDetail(long product_id)
         {
             Detail_Product product = await Program.api_product.getProductDetail(product_id);
-            if (product == null)
+            if (product.productName == "")
             {
                 return BadRequest();
             }

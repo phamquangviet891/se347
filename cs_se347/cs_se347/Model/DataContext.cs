@@ -6,6 +6,8 @@ namespace cs_se347.Model
     public class DataContext :DbContext
     {
         public static Random random = new Random();
+        public DbSet<SqlUser> users { get; set; }
+        public DbSet<SqlCart> carts { get; set; }
 
         public DbSet<SqlProduct> products { get; set; }
         public DbSet<SqlShop> shops { get; set; }

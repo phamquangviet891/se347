@@ -59,6 +59,54 @@ namespace cs_se347.APIs
                     item.image = "https://salt.tikicdn.com/cache/100x100/ts/category/00/5d/97/384ca1a678c4ee93a0886a204f47645d.png.webp";
                     context.categories.Add(item);
                 }
+                category = context.categories.Where(s => s.title == "Giày - Dép nữ").FirstOrDefault();
+                if (category == null)
+                {
+                    SqlCategory item = new SqlCategory();
+                    item.title = "Giày - Dép nữ";
+                    item.image = "https://salt.tikicdn.com/cache/100x100/ts/category/cf/ed/e1/96216aae6dd0e2beeb5e91d301649d28.png.webp";
+                    context.categories.Add(item);
+                }
+                category = context.categories.Where(s => s.title == "Túi thời trang nữ").FirstOrDefault();
+                if (category == null)
+                {
+                    SqlCategory item = new SqlCategory();
+                    item.title = "Giày - Dép nữ";
+                    item.image = "https://salt.tikicdn.com/cache/100x100/ts/category/31/a7/94/6524d2ecbec216816d91b6066452e3f2.png.webp";
+                    context.categories.Add(item);
+                }
+                category = context.categories.Where(s => s.title == "Giày - Dép nam").FirstOrDefault();
+                if (category == null)
+                {
+                    SqlCategory item = new SqlCategory();
+                    item.title = "Giày - Dép nam";
+                    item.image = "https://salt.tikicdn.com/cache/100x100/ts/category/d6/7f/6c/5d53b60efb9448b6a1609c825c29fa40.png.webp";
+                    context.categories.Add(item);
+                }
+                category = context.categories.Where(s => s.title == "Túi thời trang nam").FirstOrDefault();
+                if (category == null)
+                {
+                    SqlCategory item = new SqlCategory();
+                    item.title = "Túi thời trang nam";
+                    item.image = "https://salt.tikicdn.com/cache/100x100/ts/category/9b/31/af/669e6a133118e5439d6c175e27c1f963.png.webp";
+                    context.categories.Add(item);
+                }
+                category = context.categories.Where(s => s.title == "Balo và Vali").FirstOrDefault();
+                if (category == null)
+                {
+                    SqlCategory item = new SqlCategory();
+                    item.title = "Balo và Vali";
+                    item.image = "https://salt.tikicdn.com/cache/100x100/ts/category/3e/c0/30/1110651bd36a3e0d9b962cf135c818ee.png.webp";
+                    context.categories.Add(item);
+                }
+                category = context.categories.Where(s => s.title == "Phụ kiện thời trang").FirstOrDefault();
+                if (category == null)
+                {
+                    SqlCategory item = new SqlCategory();
+                    item.title = "Phụ kiện thời trang";
+                    item.image = "https://salt.tikicdn.com/cache/100x100/ts/category/ca/53/64/49c6189a0e1c1bf7cb91b01ff6d3fe43.png.webp";
+                    context.categories.Add(item);
+                }
                 await context.SaveChangesAsync();
 
             }

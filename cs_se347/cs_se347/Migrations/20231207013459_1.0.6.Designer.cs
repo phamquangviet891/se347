@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using cs_se347.Model;
@@ -11,9 +12,10 @@ using cs_se347.Model;
 namespace cs_se347.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231207013459_1.0.6")]
+    partial class _106
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,36 +23,6 @@ namespace cs_se347.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("cs_se347.Model.SqlCart", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
-
-                    b.Property<string>("option")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("productID")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("userID")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("productID");
-
-                    b.HasIndex("userID");
-
-                    b.ToTable("tb_cart", (string)null);
-                });
 
             modelBuilder.Entity("cs_se347.Model.SqlCategory", b =>
                 {
@@ -70,7 +42,7 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_category", (string)null);
+                    b.ToTable("tb_category");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlProduct", b =>
@@ -93,9 +65,6 @@ namespace cs_se347.Migrations
                         .HasColumnType("text[]");
 
                     b.Property<int>("discount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("inventory")
                         .HasColumnType("integer");
 
                     b.Property<bool>("isDeleted")
@@ -138,7 +107,7 @@ namespace cs_se347.Migrations
 
                     b.HasIndex("shopID");
 
-                    b.ToTable("tb_product", (string)null);
+                    b.ToTable("tb_product");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlShop", b =>
@@ -166,7 +135,7 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_shop", (string)null);
+                    b.ToTable("tb_shop");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlUser", b =>
@@ -195,26 +164,7 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_user", (string)null);
-                });
-
-            modelBuilder.Entity("cs_se347.Model.SqlCart", b =>
-                {
-                    b.HasOne("cs_se347.Model.SqlProduct", "product")
-                        .WithMany()
-                        .HasForeignKey("productID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cs_se347.Model.SqlUser", "user")
-                        .WithMany()
-                        .HasForeignKey("userID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("product");
-
-                    b.Navigation("user");
+                    b.ToTable("tb_user");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlProduct", b =>

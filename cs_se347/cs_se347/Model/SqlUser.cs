@@ -9,7 +9,13 @@ namespace cs_se347.Model
         [Key]
         public long ID { get; set; }
         public string fullName { get; set; } = "";
+        public string email { get; set; } = "";
         public string phoneNumber { get; set; } = "";
+        public string password { get; set; } = "";
+    }
+    public class Login_DTO
+    {
+        public string email { get; set; } = "";
         public string password { get; set; } = "";
     }
 }
