@@ -1,41 +1,62 @@
+using Serilog.Sinks.SystemConsole.Themes;
+using Serilog;
+using cs_se347.APIs;
+
 namespace cs_se347
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static MyProduct api_product = new MyProduct();
+        public static MyCategory api_category = new MyCategory();
+        public static MyShop api_shop = new MyShop();
+
+        public static async Task Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddCors(options =>
+            Log.Logger = new LoggerConfiguration()
+                   .MinimumLevel.Debug()
+                   .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                   .WriteTo.File("mylog.txt", rollingInterval: RollingInterval.Day)
+                   .CreateLogger();
+            try
             {
-                options.AddDefaultPolicy(builder =>
+                var builder = WebApplication.CreateBuilder(args);
+                builder.Services.AddCors(options =>
                 {
-                    builder.WithOrigins("http://localhost:3000")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
+                    options.AddDefaultPolicy(builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });
                 });
-            });
-                    // Add services to the container.
+                // Add services to the container.
 
-                    builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+                builder.Services.AddControllers();
+                // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+                builder.Services.AddEndpointsApiExplorer();
+                builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
+                var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+                // Configure the HTTP request pipeline.
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            app.MapGet("/", () => string.Format("Server Se347 - {0}", DateTime.Now));
+                app.MapGet("/", () => string.Format("Server Se347 - {0}", DateTime.Now));
 
-            app.UseAuthorization();
+                app.UseAuthorization();
 
 
-            app.MapControllers();
-            app.UseCors();
-
-            app.Run();
+                app.MapControllers();
+                app.UseCors();
+                await api_category.initAsync();
+                await api_shop.initAsync();
+                app.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
         }
     }
 }

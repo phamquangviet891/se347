@@ -1,0 +1,18 @@
+2023-12-06 11:27:37.505 +07:00 [ERR] 42P01: relation "tb_cateogory" does not exist
+
+POSITION: 39
+2023-12-06 11:27:57.763 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-06 11:28:03.886 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-06 11:30:13.945 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-06 11:40:16.134 +07:00 [ERR] No such host is known.
+2023-12-06 11:53:29.112 +07:00 [ERR] 42703: column t.danh_gia does not exist
+
+POSITION: 16
+2023-12-06 11:55:03.764 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-06 11:55:17.000 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-06 11:55:21.782 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-06 12:03:21.607 +07:00 [ERR] 42P01: relation "tb_category" does not exist
+
+POSITION: 39
+2023-12-06 12:04:24.336 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-06 12:04:47.784 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
