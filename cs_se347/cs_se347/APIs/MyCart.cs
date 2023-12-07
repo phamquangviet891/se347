@@ -26,12 +26,12 @@ namespace cs_se347.APIs
                 {
                     return false;
                 }
-                if (product.options.Count>=1 && !product.options.Contains(option))
+                if (product.options.Count >= 1 && !product.options.Contains(option))
                 {
                     return false;
                 }
 
-                SqlCart existing = context.carts.Include(s => s.user).Include(s => s.product).Where(s=>s.product.ID==productId && s.user.ID==userId && s.option==option).FirstOrDefault();
+                SqlCart existing = context.carts.Include(s => s.user).Include(s => s.product).Where(s => s.product.ID == productId && s.user.ID == userId && s.option == option).FirstOrDefault();
                 if (existing != null && existing.option.Contains(option))
                 {
                     existing.quantity += 1;
@@ -41,7 +41,7 @@ namespace cs_se347.APIs
                 else
                 {
                     SqlCart newCart = new SqlCart();
-                    if (product.options.Count>=1)
+                    if (product.options.Count >= 1)
                     {
                         newCart.option = option;
                     }
@@ -52,6 +52,7 @@ namespace cs_se347.APIs
                     newCart.product = product;
                     newCart.user = user;
                     newCart.quantity = 1;
+                    newCart.status = Status_Cart.active;
                     context.carts.Add(newCart);
                     await context.SaveChangesAsync();
                     return true;
@@ -64,14 +65,15 @@ namespace cs_se347.APIs
             List<Res_getList> response = new List<Res_getList>();
             using (DataContext context = new DataContext())
             {
-                SqlUser user = context.users.Where(s=>s.ID==userId).FirstOrDefault();
-                if( user == null) {
+                SqlUser user = context.users.Where(s => s.ID == userId).FirstOrDefault();
+                if (user == null)
+                {
                     return response;
                 }
 
-                List<SqlCart> carts = context.carts.Include(s => s.user).Include(s=>s.product).ThenInclude(s=>s.shop).Where(s => s.user == user).ToList();
+                List<SqlCart> carts = context.carts.Include(s => s.user).Include(s => s.product).ThenInclude(s => s.shop).Where(s => s.user == user && s.status == Status_Cart.active).ToList();
                 List<SqlShop> shops = new List<SqlShop>();
-                foreach(SqlCart cart in carts)
+                foreach (SqlCart cart in carts)
                 {
                     if (!shops.Contains(cart.product.shop))
                     {
@@ -81,10 +83,10 @@ namespace cs_se347.APIs
                 for (int i = 0; i < shops.Count; i++)
                 {
                     Res_getList item = new Res_getList();
-                    Shop _shop= new Shop();
+                    Shop _shop = new Shop();
                     _shop.name = shops[i].name;
                     item.shop = _shop;
-                    List < Res_CartItem_DTO > list = new List < Res_CartItem_DTO >();
+                    List<Res_CartItem_DTO> list = new List<Res_CartItem_DTO>();
                     foreach (SqlCart cart in carts)
                     {
                         Res_CartItem_DTO tmp = new Res_CartItem_DTO();
@@ -113,7 +115,7 @@ namespace cs_se347.APIs
         {
             using (DataContext context = new DataContext())
             {
-                SqlCart cart = context.carts.Where(s=>s.ID== cartId).FirstOrDefault();
+                SqlCart cart = context.carts.Where(s => s.ID == cartId && s.status == Status_Cart.active).FirstOrDefault();
                 if (cart == null)
                 {
                     return false;
@@ -137,8 +139,22 @@ namespace cs_se347.APIs
                 }
                 else
                 {
-                    cart.quantity -= 1;
-                    await context.SaveChangesAsync();
+                    if (cart.quantity > 1)
+                    {
+                        cart.quantity -= 1;
+                        await context.SaveChangesAsync();
+                    }
+                    else if (cart.quantity ==1) 
+                    {
+                        cart.quantity = 0;
+                        cart.status= Status_Cart.deleted;
+                        await context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
                     return true;
                 }
             }
@@ -147,14 +163,14 @@ namespace cs_se347.APIs
         {
             using (DataContext context = new DataContext())
             {
-                SqlCart cart = context.carts.Where(s => s.ID == cartId).FirstOrDefault();
+                SqlCart cart = context.carts.Where(s => s.ID == cartId && s.status==Status_Cart.active).FirstOrDefault();
                 if (cart == null)
                 {
                     return false;
                 }
                 else
                 {
-                    context.Remove(cart);
+                    cart.status = Status_Cart.deleted;
                     await context.SaveChangesAsync();
                     return true;
                 }

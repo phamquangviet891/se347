@@ -21,5 +21,6 @@ namespace cs_se347.Controllers
                 return Ok(categories);
             }
         }
+        
     }
 }

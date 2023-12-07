@@ -12,6 +12,13 @@ namespace cs_se347.Model
         public SqlUser user { get; set; }
         public int quantity { get; set; } = 1;
         public string option { get; set; }
+        public Status_Cart status { get; set; } = Status_Cart.active;
+    }
+    public enum Status_Cart
+    {
+        active,
+        order,
+        deleted
     }
     public class Res_CartItem_DTO
     {

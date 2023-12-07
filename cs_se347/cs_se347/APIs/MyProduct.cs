@@ -1,6 +1,7 @@
 ﻿using cs_se347.Controllers;
 using cs_se347.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace cs_se347.APIs
 {
@@ -12,11 +13,12 @@ namespace cs_se347.APIs
             List<HomePage_Product> response = new List<HomePage_Product>(); 
             using (DataContext context = new DataContext())
             {
-                List<SqlProduct> products = context.products.Where(s=>s.isDeleted==false).ToList();
+                List<SqlProduct> products = context.products.Include(s=>s.category).Where(s=>s.isDeleted==false).ToList();
                 foreach (SqlProduct product in products)
                 {
                     HomePage_Product item = new HomePage_Product();
                     item.ID = product.ID;
+                    item.category = product.category.title;
                     item.productName = product.productName;
                     item.productSalePrice = product.productSalePrice;
                     item.sold = product.sold;
@@ -99,6 +101,33 @@ namespace cs_se347.APIs
             return true ;
         }
 
+        public async Task<List<HomePage_Product>> getProductsByCategoryId(long categoryId)
+        {
+            List < HomePage_Product > response = new List<HomePage_Product> ();
+            using (DataContext context = new DataContext())
+            {
+                SqlCategory category = context.categories.Where(s => s.ID == categoryId).FirstOrDefault() ;
+                if (category == null)
+                {
+                    return response;
+                }
+                List<SqlProduct> products = context.products.Where(s=>s.category==category).ToList();
+                foreach (SqlProduct product in products)
+                {
+                    HomePage_Product item = new HomePage_Product();
+                    item.ID = product.ID;
+                    item.category = category.title;
+                    item.productName = product.productName;
+                    item.discount = product.discount;
+                    item.productSalePrice = product.productSalePrice;
+                    item.sold = product.sold;
+                    item.rating= product.rating;
+                    item.giao_thu = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
+                    response.Add(item);
+                }
+                return response;
+            }
+        }
 
 
     }

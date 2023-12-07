@@ -71,7 +71,7 @@ namespace cs_se347.APIs
                 if (category == null)
                 {
                     SqlCategory item = new SqlCategory();
-                    item.title = "Giày - Dép nữ";
+                    item.title = "Túi thời trang nữ";
                     item.image = "https://salt.tikicdn.com/cache/100x100/ts/category/31/a7/94/6524d2ecbec216816d91b6066452e3f2.png.webp";
                     context.categories.Add(item);
                 }
@@ -129,5 +129,6 @@ namespace cs_se347.APIs
             }
             return response;
         }
+
     }
 }

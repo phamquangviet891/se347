@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using cs_se347.Model;
@@ -11,9 +12,10 @@ using cs_se347.Model;
 namespace cs_se347.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231207083320_1.1.0")]
+    partial class _110
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,12 +92,9 @@ namespace cs_se347.Migrations
                     b.Property<int>("status")
                         .HasColumnType("integer");
 
-                    b.Property<long>("userID")
-                        .HasColumnType("bigint");
-
                     b.HasKey("ID");
 
-                    b.HasIndex("userID");
+                    b.HasIndex("cartID");
 
                     b.ToTable("tb_order");
                 });
@@ -246,13 +245,13 @@ namespace cs_se347.Migrations
 
             modelBuilder.Entity("cs_se347.Model.SqlOrder", b =>
                 {
-                    b.HasOne("cs_se347.Model.SqlUser", "user")
+                    b.HasOne("cs_se347.Model.SqlCart", "cart")
                         .WithMany()
-                        .HasForeignKey("userID")
+                        .HasForeignKey("cartID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("user");
+                    b.Navigation("cart");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlProduct", b =>

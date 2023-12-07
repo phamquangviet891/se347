@@ -12,6 +12,7 @@ namespace cs_se347.Model
         public DbSet<SqlProduct> products { get; set; }
         public DbSet<SqlShop> shops { get; set; }
         public DbSet<SqlCategory> categories{ get; set; }
+        public DbSet<SqlOrder> orders { get; set; }
 
         public static string randomString(int length)
         {

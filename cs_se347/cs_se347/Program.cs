@@ -11,6 +11,7 @@ namespace cs_se347
         public static MyShop api_shop = new MyShop();
         public static MyUser api_user = new MyUser();
         public static MyCart api_cart = new MyCart();
+        public static MyOrder api_order = new MyOrder();
 
         public static async Task Main(string[] args)
         {

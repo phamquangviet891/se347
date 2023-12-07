@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using cs_se347.Model;
@@ -11,9 +12,10 @@ using cs_se347.Model;
 namespace cs_se347.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231207064230_1.0.9")]
+    partial class _109
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,30 +76,6 @@ namespace cs_se347.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("tb_category");
-                });
-
-            modelBuilder.Entity("cs_se347.Model.SqlOrder", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
-
-                    b.Property<long>("cartID")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("status")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("userID")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("userID");
-
-                    b.ToTable("tb_order");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlProduct", b =>
@@ -240,17 +218,6 @@ namespace cs_se347.Migrations
                         .IsRequired();
 
                     b.Navigation("product");
-
-                    b.Navigation("user");
-                });
-
-            modelBuilder.Entity("cs_se347.Model.SqlOrder", b =>
-                {
-                    b.HasOne("cs_se347.Model.SqlUser", "user")
-                        .WithMany()
-                        .HasForeignKey("userID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("user");
                 });
