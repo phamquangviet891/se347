@@ -24,7 +24,7 @@ namespace cs_se347.Model
     {
         public long Id { get; set; }
         public string shopName { get; set; }
-        public int total { get; set; }
+        public long total { get; set; }
         public int quantity { get; set; }
         public string status { get; set; }
     }

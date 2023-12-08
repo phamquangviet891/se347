@@ -13,6 +13,8 @@ namespace cs_se347.Model
         public DbSet<SqlShop> shops { get; set; }
         public DbSet<SqlCategory> categories{ get; set; }
         public DbSet<SqlOrder> orders { get; set; }
+        public DbSet<SqlAddress> addresses { get; set; }
+
 
         public static string randomString(int length)
         {

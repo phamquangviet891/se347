@@ -12,6 +12,7 @@ namespace cs_se347
         public static MyUser api_user = new MyUser();
         public static MyCart api_cart = new MyCart();
         public static MyOrder api_order = new MyOrder();
+        public static MyAddress api_address = new MyAddress();
 
         public static async Task Main(string[] args)
         {
@@ -54,6 +55,7 @@ namespace cs_se347
                 app.UseCors();
                 await api_category.initAsync();
                 await api_shop.initAsync();
+                await api_product.updateSalePrice();
                 app.Run();
             }
             catch (Exception ex)

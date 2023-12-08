@@ -9,8 +9,8 @@ namespace cs_se347.Model
         [Key]
         public long ID { get; set; }
         public string productName { get; set; } = "";
-        public int productPrice { get; set; } = 0;
-        public int productSalePrice { get; set; } = 0;
+        public long productPrice { get; set; } = 0;
+        public long productSalePrice { get; set; } = 0;
         public int discount { get; set; } = 0;
         public int sold { get; set; } = 0;
         public float rating { get; set; } = 0;
@@ -31,7 +31,7 @@ namespace cs_se347.Model
         public string category { get; set; }
         public string productName { get; set; }
         public int discount { get; set; }
-        public int productSalePrice { get; set; }
+        public long productSalePrice { get; set; }
         public int sold { get; set; }
         public float rating { get; set; }
         public string giao_thu { get; set; }
@@ -41,7 +41,7 @@ namespace cs_se347.Model
     {
         public string productName { get; set;}
         public int discount { get; set; }
-        public int productPrice { get; set; } 
+        public long productPrice { get; set; } 
         public string productImage { get; set; }
         public List<string> productListImage { get; set; }
         public List<string> options { get; set; }
@@ -53,8 +53,8 @@ namespace cs_se347.Model
     {
         public long ID { get; set; }
         public string productName { get; set; } = "";
-        public int productPrice { get; set; } = 0;
-        public int productSalePrice { get; set; } = 0;
+        public long productPrice { get; set; } = 0;
+        public long productSalePrice { get; set; } = 0;
         public int discount { get; set; } = 0;
         public int sold { get; set; } = 0;
         public float rating { get; set; } = 0;

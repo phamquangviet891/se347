@@ -58,5 +58,19 @@ namespace cs_se347.Controllers
                 return Ok(products);
             }
         }
+        [HttpGet]
+        [Route("/getListByShopId")]
+        public async Task<IActionResult> getProductsByShopId(long shopId)
+        {
+            List<HomePage_Product> products = await Program.api_product.getProductsByShopId(shopId);
+            if (products == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return Ok(products);
+            }
+        }
     }
 }

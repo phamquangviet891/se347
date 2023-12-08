@@ -25,12 +25,12 @@ namespace cs_se347.Model
         public long cartId { get; set; }
         public long productId { get; set; }
         public string productName { get; set; }
-        public int productSalePrice { get; set; }
+        public long productSalePrice { get; set; }
         public string productImage { get; set; }
         public string giao_thu { get; set; }
         public int quantity { get; set; }
         public string option { get; set; }
-        public int total { get; set; }
+        public long total { get; set; }
     }
     public class Req_cart
     {

@@ -45,7 +45,7 @@ namespace cs_se347.APIs
                 {
                     response.ID = product.ID;
                     response.productName = product.productName;
-                    response.productPrice= product.productSalePrice;
+                    response.productPrice= product.productPrice;
                     response.sold = product.sold;
                     response.rating = product.rating;
                     response.productSalePrice= product.productSalePrice;
@@ -60,7 +60,7 @@ namespace cs_se347.APIs
             }
         }
 
-        public async Task<bool> createNew(long shopId,long categoryId , string productName, string productImage, int productPrice, List<string> productListImage,int discount, List<string> options, List<string> detail, string description)
+        public async Task<bool> createNew(long shopId,long categoryId , string productName, string productImage, long productPrice, List<string> productListImage,int discount, List<string> options, List<string> detail, string description)
         {
             using (DataContext context = new DataContext())
             {
@@ -93,8 +93,9 @@ namespace cs_se347.APIs
 
                 product.rating = DataContext.GenerateRandomRating();
                 product.sold = DataContext.GenerateRandomValue();
+                decimal roundedValue = ((product.productPrice * 100 - product.productPrice * product.discount) / 100 / 1000) * 1000;
+                product.productSalePrice = (int)roundedValue;
                 context.products.Add(product);
-                product.productSalePrice = (1 - discount/100) * productPrice;
                 await context.SaveChangesAsync();
             }
             
@@ -129,6 +130,51 @@ namespace cs_se347.APIs
             }
         }
 
+        public async Task<bool> updateSalePrice()
+        {
+            using(DataContext context = new DataContext())
+            {
+                List<SqlProduct> products = context.products.ToList();
+                foreach(SqlProduct product in products)
+                {
+                    if(product != null) {
+                        decimal roundedValue = ((product.productPrice * 100 - product.productPrice * product.discount) / 100 / 1000) * 1000;
+                        product.productSalePrice = (int)roundedValue;
+                    }
+                }
+                await context.SaveChangesAsync();
+            }
+            return true;
+        }
 
+        public async Task<List<HomePage_Product>> getProductsByShopId(long shopId)
+        {
+            List<HomePage_Product> response = new List<HomePage_Product>();
+            using (DataContext context = new DataContext())
+            {
+                SqlShop shop =context.shops.Where(s=>s.ID== shopId).FirstOrDefault();   
+                if(shop == null)
+                {
+                    return response;
+                }    
+
+                List<SqlProduct> products = context.products.Include(s => s.category).Include(s=>s.shop).Where(s => s.isDeleted == false && s.shop==shop).ToList();
+                foreach (SqlProduct product in products)
+                {
+                    HomePage_Product item = new HomePage_Product();
+                    item.ID = product.ID;
+                    item.category = product.category.title;
+                    item.productName = product.productName;
+                    item.productSalePrice = product.productSalePrice;
+                    item.sold = product.sold;
+                    item.rating = product.rating;
+                    item.discount = product.discount;
+                    item.giao_thu = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
+
+                    response.Add(item);
+                }
+            }
+            return response;
+        }
     }
 }
