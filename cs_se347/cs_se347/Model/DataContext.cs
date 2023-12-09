@@ -23,22 +23,17 @@ namespace cs_se347.Model
         }
         public static float GenerateRandomRating()
         {
-            // Generate a random double between 0.0 and 1.0
             double randomValue = random.NextDouble();
 
-            // Scale and shift the random value to the desired range (4.0 to 5.0)
             double ratingRange = 5.0 - 4.0;
             double scaledRandomValue = randomValue * ratingRange;
 
-            // Add the lower bound of the range
             double finalRating = scaledRandomValue + 4.0;
 
-            // Round to one decimal place
             return (float)Math.Round(finalRating, 1);
         }
         public static int GenerateRandomValue()
         {
-            // Generate a random value between 2000 and 8000
             int minValue = 2000;
             int maxValue = 8000;
 

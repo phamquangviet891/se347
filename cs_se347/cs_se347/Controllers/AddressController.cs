@@ -40,7 +40,15 @@ namespace cs_se347.Controllers
         [Route("deleteOne")]
         public async Task<IActionResult> deleteOne(long addressId)
         {
-            return Ok();
+            bool tmp = await Program.api_address.deleteOne(addressId);
+            if (tmp)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
 

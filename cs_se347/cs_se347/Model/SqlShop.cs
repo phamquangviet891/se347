@@ -12,7 +12,6 @@ namespace cs_se347.Model
         public string logo { get; set; }
         public double rating { get; set; }= 4.7;
         public string danh_gia { get; set; }
-
         public bool isDeleted { get; set; }  = false;
     }
 

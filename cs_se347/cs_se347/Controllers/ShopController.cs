@@ -6,7 +6,7 @@ namespace cs_se347.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StoreController : ControllerBase
+    public class ShopController : ControllerBase
     {
         //[HttpGet]
         //[Route("getShop")]

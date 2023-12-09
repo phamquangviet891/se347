@@ -20,6 +20,7 @@ namespace cs_se347.APIs
                     item.ID = product.ID;
                     item.category = product.category.title;
                     item.productName = product.productName;
+                    item.productImage = product.productImage;
                     item.productSalePrice = product.productSalePrice;
                     item.sold = product.sold;
                     item.rating = product.rating;

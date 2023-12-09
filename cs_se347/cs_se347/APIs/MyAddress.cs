@@ -55,7 +55,7 @@ namespace cs_se347.APIs
                     return response;
                 }
 
-                List<SqlAddress> addresses = context.addresses.Include(s => s.user).Where(s => s.user == user).ToList();
+                List<SqlAddress> addresses = context.addresses.Include(s => s.user).Where(s => s.user == user && s.isDeleted == false).ToList();
                 foreach (SqlAddress address in addresses)
                 {
                     Address_Short item = new Address_Short();
@@ -70,6 +70,25 @@ namespace cs_se347.APIs
                 return response;
             }
 
+        }
+
+        public async Task<bool> deleteOne(long addressId)
+        {
+            using (DataContext context = new DataContext())
+            {
+                SqlAddress address= context.addresses.Where(s=>s.isDeleted == false).FirstOrDefault();
+                if (address == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    address.isDeleted = true;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+
+            }
         }
     }
 }

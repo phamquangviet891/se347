@@ -12,6 +12,7 @@ namespace cs_se347.Model
         public string email { get; set; } = "";
         public string phoneNumber { get; set; } = "";
         public string password { get; set; } = "";
+        public string avatar { get; set; } = "";
     }
     public class Login_DTO
     {

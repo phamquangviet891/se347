@@ -29,6 +29,7 @@ namespace cs_se347.Model
     {
         public long ID { get; set; }
         public string category { get; set; }
+        public string productImage { get; set; }
         public string productName { get; set; }
         public int discount { get; set; }
         public long productSalePrice { get; set; }

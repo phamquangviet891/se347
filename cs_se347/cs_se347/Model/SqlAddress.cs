@@ -21,6 +21,7 @@ namespace cs_se347.Model
         //true => nha rieng, chung cu
         //false => co quan, cong ty
         public bool dia_chi_mac_dinh { get; set; }=false;
+        public bool isDeleted { get; set; } = false;
     }
     public class Req_Address_create
     {
