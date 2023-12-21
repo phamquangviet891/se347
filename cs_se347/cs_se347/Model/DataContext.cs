@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace cs_se347.Model
 {
@@ -31,6 +33,22 @@ namespace cs_se347.Model
             double finalRating = scaledRandomValue + 4.0;
 
             return (float)Math.Round(finalRating, 1);
+        }
+        public static string GetSlug(string text)
+        {
+            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string slug = text.Normalize(NormalizationForm.FormD).Trim().ToLower();
+
+            slug = regex.Replace(slug, String.Empty)
+              .Replace('\u0111', 'd').Replace('\u0110', 'D')
+              .Replace(",", "-").Replace(".", "-").Replace("!", "")
+              .Replace("(", "").Replace(")", "").Replace(";", "-")
+              .Replace("/", "-").Replace("%", "ptram").Replace("&", "va")
+              .Replace(" - ", "-")
+              .Replace("?", "").Replace('"', '-').Replace(' ', '-');
+
+
+            return slug;
         }
         public static int GenerateRandomValue()
         {

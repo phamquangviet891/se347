@@ -11,7 +11,8 @@ namespace cs_se347.Model
         public Status_Order status { get; set; } = Status_Order.cho_thanh_toan;
         public long cartID { get; set; }
         public SqlUser user { get; set; }
-        public List<string> list_cart_item { get; set; } // serialize
+        public SqlShop shop { get; set; }
+        public List<string> list_cart_item { get; set; }// serialize
         public string address { get; set; } //address serialize 
         public DateTime time { get; set; } = DateTime.UtcNow;
 

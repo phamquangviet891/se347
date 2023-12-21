@@ -9,6 +9,7 @@ namespace cs_se347.Model
         [Key]
         public long ID { get; set; }
         public string fullName { get; set; } = "";
+        public string userName { get; set; } = "";
         public string email { get; set; } = "";
         public string phoneNumber { get; set; } = "";
         public string password { get; set; } = "";
@@ -17,6 +18,22 @@ namespace cs_se347.Model
     public class Login_DTO
     {
         public string email { get; set; } = "";
+
         public string password { get; set; } = "";
+    }
+    public class Register_DTO
+    {
+        public string userName { get; set; } = "";
+        public string email { get; set; } = "";
+        public string phoneNumber { get; set; } = "";
+        public string password { get; set; } = "";
+    }
+    public class Info_DTO
+    {
+        public string fullName { get; set; }
+        public string userName { get; set; }
+        public string email { get; set; }
+        public string phoneNumber { get; set; }
+        public string avatar { get; set; }
     }
 }

@@ -123,7 +123,7 @@ namespace cs_se347.APIs
                     item.ID = category.ID;
                     item.title = category.title;
                     item.image = category.image;
-
+                    item.slug = DataContext.GetSlug(category.title);
                     response.Add(item);
                 }
             }

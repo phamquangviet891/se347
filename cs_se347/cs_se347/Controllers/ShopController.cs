@@ -1,6 +1,7 @@
 ﻿using cs_se347.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace cs_se347.Controllers
 {
@@ -8,19 +9,12 @@ namespace cs_se347.Controllers
     [ApiController]
     public class ShopController : ControllerBase
     {
-        //[HttpGet]
-        //[Route("getShop")]
-        //public async Task<SqlShop> getShopbyId(long shopId)
-        //{
-
-        //    using(DataContext context = new DataContext())
-        //    {
-        //        SqlShop shop = context.shops.Where(s=>s.ID == shopId).FirstOrDefault();
-        //        if (shop == null)
-        //        {
-
-        //        }
-        //    }
-        //}
+        
+        [HttpGet]
+        [Route("info")]
+        public IActionResult get_info(long shop_id)
+        {
+            return Ok(Program.api_shop.getShop(shop_id));
+        }
     }
 }

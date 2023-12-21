@@ -8,12 +8,11 @@ namespace cs_se347.Controllers
     public class CartController:ControllerBase
     {
         [HttpGet]
-        [Route("/getCartByUserId")]
+        [Route("getCartByUserId")]
         public async Task<IActionResult> getCartsByUserId(long userId)
         {
             return Ok(Program.api_cart.getCartsByUserId(userId));
         }
-
         public class Req_cart
         {
             public long productId { get; set; }
@@ -38,10 +37,10 @@ namespace cs_se347.Controllers
 
         [HttpPut]
         [Route("increaseCart")]
-        public async Task<IActionResult> increaseCart(long cartId)
+        public async Task<IActionResult> increaseCartItem(long cartItem_id)
         {
-            bool tmp = await Program.api_cart.increaseCart(cartId);
-            if(tmp)
+            bool tmp = await Program.api_cart.increaseCartItem(cartItem_id);
+            if (tmp)
             {
                 return Ok();
             }
@@ -52,9 +51,9 @@ namespace cs_se347.Controllers
         }
         [HttpPut]
         [Route("decreaseCart")]
-        public async Task<IActionResult> decreaseCart(long cartId)
+        public async Task<IActionResult> decreaseCartItem(long cartItem_id)
         {
-            bool tmp = await Program.api_cart.decreaseCart(cartId);
+            bool tmp = await Program.api_cart.decreaseCartItem(cartItem_id);
             if (tmp)
             {
                 return Ok();
@@ -66,9 +65,9 @@ namespace cs_se347.Controllers
         }
         [HttpDelete]
         [Route("removeCart")]
-        public async Task<IActionResult> removeCart(long cartId)
+        public async Task<IActionResult> removeCartItem(long cartItem_id)
         {
-            bool tmp = await Program.api_cart.removeCart(cartId);
+            bool tmp = await Program.api_cart.removeCartItem(cartItem_id);
             if (tmp)
             {
                 return Ok();

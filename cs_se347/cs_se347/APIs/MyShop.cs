@@ -1,4 +1,5 @@
 ﻿using cs_se347.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace cs_se347.APIs
 {
@@ -20,6 +21,29 @@ namespace cs_se347.APIs
                     context.shops.Add(item);
                 }
                 await context.SaveChangesAsync();
+            }
+        }
+
+        public Detail_Shop getShop(long shopId)
+        {
+            Detail_Shop response = new Detail_Shop();
+            using (DataContext context = new DataContext())
+            {
+                SqlShop? shop = context.shops.Where(s => s.ID == shopId).Include(s => s.products).FirstOrDefault();
+                if (shop == null)
+                {
+                    return response;
+                }
+                else
+                {
+                    response.shop_id = shop.ID;
+                    response.logo = shop.logo;
+                    response.rating = shop.rating;
+                    response.name = shop.name;
+                    response.danh_gia = shop.danh_gia;
+                    response.tong_san_pham = shop.products.Count();
+                }
+                return response;
             }
         }
     }

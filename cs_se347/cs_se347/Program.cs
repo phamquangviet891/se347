@@ -53,9 +53,9 @@ namespace cs_se347
 
                 app.MapControllers();
                 app.UseCors();
-                await api_category.initAsync();
-                await api_shop.initAsync();
-                await api_product.updateSalePrice();
+                //await api_category.initAsync();
+                //await api_shop.initAsync();
+                //await api_product.updateSalePrice();
                 app.Run();
             }
             catch (Exception ex)

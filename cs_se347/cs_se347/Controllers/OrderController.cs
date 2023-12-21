@@ -12,12 +12,13 @@ namespace cs_se347.Controllers
         {
             public List<long> list_cart_item_id { get; set; }
             public long address_id { get; set; }
+            public List<long> list_voucher { get; set; }
         }
         [HttpPost]
-        [Route("/addOrder")]
-        public async Task<IActionResult> addOrder(Order_Add _DTO)
+        [Route("addOrder")]
+        public async Task<IActionResult> addOrder(Order_Add dto)
         {
-            bool tmp = await Program.api_order.addOrder(_DTO.list_cart_item_id, _DTO.address_id);
+            bool tmp = await Program.api_order.addOrder(dto.list_cart_item_id, dto.address_id, dto.list_voucher);
             if (tmp)
             {
                 return Ok();
@@ -28,10 +29,11 @@ namespace cs_se347.Controllers
             }
         }
         [HttpGet]
-        [Route("/getOrdersByUserId")]
-        public async Task<IActionResult> getOrdersByUserId(long userId)
+        [Route("getOrdersByUserId")]
+        public async Task<IActionResult> getOrdersByUserId(long userId, int status, int page, int page_size)
         {
-            return Ok(Program.api_order.getOrdersByUserId(userId));
+            return Ok(Program.api_order.getOrdersByUserId(userId, status, page, page_size));
         }
+
     }
 }

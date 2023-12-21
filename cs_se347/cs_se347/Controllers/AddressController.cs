@@ -10,11 +10,12 @@ namespace cs_se347.Controllers
     {
         [HttpPost]
         [Route("createNew")]
-        public async Task<IActionResult> createNew(long userId, Req_Address_create _dto)
+        public async Task<IActionResult> createNew(long userId, Address_DTO _dto)
         {
             bool tmp = await Program.api_address.createNew(userId, _dto);
-            if (tmp) { 
-            return Ok();
+            if (tmp)
+            {
+                return Ok();
             }
             else
             {
@@ -26,21 +27,14 @@ namespace cs_se347.Controllers
         [Route("getByUserId")]
         public async Task<IActionResult> getByUserId(long userId)
         {
-            return Ok( Program.api_address.getByUserId(userId));
+            return Ok(Program.api_address.getByUserId(userId));
         }
 
         [HttpPut]
-        [Route("updateOne")]
-        public async Task<IActionResult> updateOne(long addressId, Req_Address_create _dto)
+        [Route("setToDefault")]
+        public async Task<IActionResult> setToDefault(long addressId)
         {
-            return Ok();
-        }
-
-        [HttpDelete]
-        [Route("deleteOne")]
-        public async Task<IActionResult> deleteOne(long addressId)
-        {
-            bool tmp = await Program.api_address.deleteOne(addressId);
+            bool tmp = await Program.api_address.setToDefault(addressId);
             if (tmp)
             {
                 return Ok();
@@ -49,6 +43,28 @@ namespace cs_se347.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        //[HttpDelete]
+        //[Route("deleteOne")]
+        //public async Task<IActionResult> deleteOne(long addressId)
+        //{
+        //    bool tmp = await Program.api_address.deleteOne(addressId);
+        //    if (tmp)
+        //    {
+        //        return Ok();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
+
+        [HttpGet]
+        [Route("default_address")]
+        public IActionResult default_address(long user_id)
+        {
+            return Ok(Program.api_address.get_default_address(user_id));
         }
 
 
