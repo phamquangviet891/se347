@@ -8,8 +8,10 @@ namespace cs_se347.APIs
     public class MyOrder
     {
         public MyOrder() { }
-        public async Task<bool> addOrder(long cartId)
+        public async Task<bool> addOrder(List<long> list_cart_item_id, long address_id)
         {
+            SqlOrder order = new SqlOrder();
+
             using (DataContext context = new DataContext())
             {
                 SqlCart cart = context.carts.Include(s => s.user).Where(s => s.ID == cartId).FirstOrDefault();
@@ -17,7 +19,6 @@ namespace cs_se347.APIs
                 {
                     return false;
                 }
-                SqlOrder order = new SqlOrder();
                 order.cartID = cartId;
                 order.user = cart.user;
                 cart.status = Status_Cart.order;
@@ -25,7 +26,17 @@ namespace cs_se347.APIs
                 await context.SaveChangesAsync();
                 return true;
             }
+        
+        
+        
+        
+        
+        
+        
+        
+        
         }
+
         public List<Res_My_Order> getOrdersByUserId(long userId)
         {
             List<Res_My_Order> response = new List<Res_My_Order>();

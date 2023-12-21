@@ -7,21 +7,17 @@ namespace cs_se347.APIs
     public class MyCart
     {
         public MyCart() { }
-        public class Res_getList
-        {
-            public Shop shop { get; set; }
-            public List<Res_CartItem_DTO> list_cartItem { get; set; } = new List<Res_CartItem_DTO>();
-        }
-        public async Task<bool> addToCart(long userId, long productId, string option)
+       
+        public async Task<bool> addToCart(long userId, long productId, string option, int quantity)
         {
             using (DataContext context = new DataContext())
             {
-                SqlUser user = context.users.Where(s => s.ID == userId).FirstOrDefault();
+                SqlUser? user = context.users.Where(s => s.ID == userId).FirstOrDefault();
                 if (user == null)
                 {
                     return false;
                 }
-                SqlProduct product = context.products.Where(s => s.ID == productId).FirstOrDefault();
+                SqlProduct? product = context.products.Where(s => s.ID == productId).FirstOrDefault();
                 if (product == null)
                 {
                     return false;
@@ -31,81 +27,135 @@ namespace cs_se347.APIs
                     return false;
                 }
 
-                SqlCart existing = context.carts.Include(s => s.user).Include(s => s.product).Where(s => s.product.ID == productId && s.user.ID == userId && s.option == option).FirstOrDefault();
-                if (existing != null && existing.option.Contains(option))
-                {
-                    existing.quantity += 1;
-                    await context.SaveChangesAsync();
-                    return true;
+                SqlCartItem? cart_item = new SqlCartItem();
+                SqlCart? cart = context.carts.Where(s => s.isDeleted == false && s.user == user).Include(s => s.cart_items).FirstOrDefault();
+                if (cart != null) // nếu đã có cart của shop trong db rồi
+                {//tìm cartitem
+                    cart_item = cart.cart_items.Where(s => s.isDeleted == false && s.status == Status_Cart_item.active && s.product == product && s.option == option).FirstOrDefault();
+                    if (cart_item != null) //nếu có
+                    {//thì tăng số lương
+                        cart_item.quantity += quantity;
+                        await context.SaveChangesAsync();
+                    }
+                    else//nếu ko có cartitem sẵn
+                    {//thì thêm cart mới
+                        cart_item = new SqlCartItem();
+                        if (product.options.Contains(option))
+                        {
+                            cart_item.option = product.options[0] + " " + option;
+                        }
+                        else
+                        {
+                            cart_item.option = "";
+                        }
+                        cart_item.cart = cart;
+                        cart_item.quantity = quantity;
+                        cart_item.product = product;
+                        context.cart_items.Add(cart_item);
+                        await context.SaveChangesAsync();
+                    }
                 }
-                else
+                else // nếu chưa có shop 
                 {
-                    SqlCart newCart = new SqlCart();
-                    if (product.options.Count >= 1)
+                    cart = new SqlCart();
+                    cart.user = user;
+                    context.carts.Add(cart);
+
+                    cart_item.cart = cart;
+                    //cart_item.option = option;
+                    if (product.options.Contains(option))
                     {
-                        newCart.option = option;
+                        cart_item.option = option;
                     }
                     else
                     {
-                        newCart.option = "";
+                        cart_item.option = "";
                     }
-                    newCart.product = product;
-                    newCart.user = user;
-                    newCart.quantity = 1;
-                    newCart.status = Status_Cart.active;
-                    context.carts.Add(newCart);
+                    cart_item.product = product;
+                    cart_item.quantity = quantity;
+                    context.cart_items.Add(cart_item);
                     await context.SaveChangesAsync();
-                    return true;
                 }
+                return true;
             }
         }
-
-        public List<Res_getList> getCartsByUserId(long userId)
+        public class CartItem_DTO
         {
-            List<Res_getList> response = new List<Res_getList>();
+            public long cartItem_id { get; set; }
+            public long product_id { get; set; }
+
+            public string productName { get; set; }
+            public long productPrice { get; set; }
+            public int discount { get; set; }
+            public long productSalePrice { get; set; }
+            public string productImage { get; set; }
+            public string? option { get; set; }
+            public int quantity { get; set; }
+        }
+        public class Carts_DTO
+        {
+            public long cart_id { get; set; }
+            public string shop { get; set; } = "";
+            public List<CartItem_DTO> list_cartItem { get; set; } = new List<CartItem_DTO>();
+            //public List voucher 
+        }
+        public List<Carts_DTO> getCartsByUserId(long userId)
+        {
+            List<Carts_DTO> response = new List<Carts_DTO>();
             using (DataContext context = new DataContext())
             {
-                SqlUser user = context.users.Where(s => s.ID == userId).FirstOrDefault();
+                SqlUser? user = context.users!.Where(s => s.ID == userId).FirstOrDefault();
                 if (user == null)
                 {
                     return response;
                 }
 
-                List<SqlCart> carts = context.carts.Include(s => s.user).Include(s => s.product).ThenInclude(s => s.shop).Where(s => s.user == user && s.status == Status_Cart.active).ToList();
-                List<SqlShop> shops = new List<SqlShop>();
+                //List<SqlCart>? carts = context.carts.Include(s => s.user).Include(s => s.shop).Where(s => s.isDeleted == false && s.user == user && s.status == Status_Cart.active).ToList();
+                List<SqlCart>? carts = context.carts.Include(s => s.user).Include(s => s.cart_items).ThenInclude(s => s.product).Where(s => s.isDeleted == false && s.user == user).ToList();
+                if (carts.Count == 0)
+                {
+                    return response;
+                }
                 foreach (SqlCart cart in carts)
                 {
-                    if (!shops.Contains(cart.product.shop))
+                    Carts_DTO cart_DTO = new Carts_DTO();
+                    //SqlShop? shop = context.shops.Where(s => s.isDeleted == true && s == cart.shop).FirstOrDefault();
+                    if (shop == null)
                     {
-                        shops.Add(cart.product.shop);
+                        continue;
                     }
-                }
-                for (int i = 0; i < shops.Count; i++)
-                {
-                    Res_getList item = new Res_getList();
-                    Shop _shop = new Shop();
-                    _shop.name = shops[i].name;
-                    item.shop = _shop;
-                    List<Res_CartItem_DTO> list = new List<Res_CartItem_DTO>();
-                    foreach (SqlCart cart in carts)
+                    cart_DTO.shop = shop.name;
+                    cart_DTO.cart_id = cart.ID;
+
+                    List<CartItem_DTO> list_cartItem = new List<CartItem_DTO>();
+                    List<SqlCartItem> cart_items = cart.cart_items;
+                    if (cart_items.Where(s => s.status == Status_Cart_item.active && s.isDeleted == false).Count() == 0)
                     {
-                        Res_CartItem_DTO tmp = new Res_CartItem_DTO();
-                        if (cart.product.shop == shops[i])
+                        continue;
+                    }
+                    foreach (SqlCartItem item in cart_items)
+                    {
+                        if (item.isDeleted)
                         {
-                            tmp.cartId = cart.ID;
-                            tmp.productId = cart.product.ID;
-                            tmp.productName = cart.product.productName;
-                            tmp.productSalePrice = cart.product.productSalePrice;
-                            tmp.productImage = cart.product.productImage;
-                            tmp.option = cart.option;
-                            tmp.giao_thu = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
-                            tmp.quantity = cart.quantity;
-                            tmp.total = cart.quantity * cart.product.productSalePrice;
-                            list.Add(tmp);
+                            continue;
+                        }
+                        if (item.status == Status_Cart_item.active)
+                        {
+                            CartItem_DTO tmp = new CartItem_DTO();
+                            tmp.cartItem_id = item.ID;
+                            tmp.product_id = item.product.ID;
+                            tmp.quantity = item.quantity;
+                            tmp.option = item.option;
+                            tmp.productSalePrice = item.product.productSalePrice;
+                            tmp.productPrice = item.product.productPrice;
+                            tmp.discount = item.product.discount;
+                            tmp.productName = item.product.productName;
+                            tmp.productImage = item.product.productImage;
+                            list_cartItem.Add(tmp);
                         }
                     }
-                    item.list_cartItem = list;
-                    response.Add(item);
+                    cart_DTO.list_cartItem = list_cartItem;
+                    response.Add(cart_DTO);
                 }
             }
             return response;

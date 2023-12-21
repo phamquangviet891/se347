@@ -8,7 +8,7 @@ namespace cs_se347.Model
         public static Random random = new Random();
         public DbSet<SqlUser> users { get; set; }
         public DbSet<SqlCart> carts { get; set; }
-
+        public DbSet<SqlCartItem> cart_items { get; set; }
         public DbSet<SqlProduct> products { get; set; }
         public DbSet<SqlShop> shops { get; set; }
         public DbSet<SqlCategory> categories{ get; set; }
