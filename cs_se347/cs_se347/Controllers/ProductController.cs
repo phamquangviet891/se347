@@ -9,9 +9,9 @@ namespace cs_se347.Controllers
     {
         [HttpGet]
         [Route("/getListProductHomepage")]
-        public async Task<IActionResult> getListProductHomepage()
+        public async Task<IActionResult> getListProductHomepage(int limit)
         {
-            return Ok(await Program.api_product.getListProductHomepage());
+            return Ok(await Program.api_product.getListProductHomepage(limit));
         }
         [HttpGet]
         [Route("/getProductDetail")]
@@ -60,9 +60,9 @@ namespace cs_se347.Controllers
         }
         [HttpGet]
         [Route("/getListByShopId")]
-        public async Task<IActionResult> getProductsByShopId(long shopId)
+        public async Task<IActionResult> getProductsByShopId(long shopId, int limit)
         {
-            List<HomePage_Product> products = await Program.api_product.getProductsByShopId(shopId);
+            List<HomePage_Product> products = await Program.api_product.getProductsByShopId(shopId,limit);
             if (products == null)
             {
                 return BadRequest();

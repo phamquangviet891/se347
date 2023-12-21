@@ -9,7 +9,7 @@ namespace cs_se347.APIs
     public class MyOrder
     {
         public MyOrder() { }
-        public async Task<bool> addOrder(List<long> list_cart_item_id, long address_id, List<long> vouchers_id)
+        public async Task<bool> addOrder(List<long> list_cart_item_id, long address_id)
         {
             SqlOrder newOrder = new SqlOrder();
             using (DataContext context = new DataContext())
@@ -135,7 +135,15 @@ namespace cs_se347.APIs
                 {
                     return response;
                 }
-                List<SqlOrder>? orders = context.orders.Where(s => s.user == user && ((int)s.status) == status).Take(page * page_size).Include(s => s.shop).ToList();
+                List<SqlOrder>? orders;
+                if (status == -1)
+                {
+                    orders = context.orders.Where(s => s.user == user).Take(page * page_size).Include(s => s.shop).ToList();
+                }
+                else
+                {
+                    orders = context.orders.Where(s => s.user == user && ((int)s.status) == status).Take(page * page_size).Include(s => s.shop).ToList();
+                }
                 foreach (SqlOrder order in orders)
                 {
                     Orders_DTO my_order = new Orders_DTO();

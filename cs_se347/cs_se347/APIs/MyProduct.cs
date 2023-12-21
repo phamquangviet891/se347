@@ -8,12 +8,12 @@ namespace cs_se347.APIs
     public class MyProduct
     {
         public MyProduct() { }
-        public async Task<List<HomePage_Product>> getListProductHomepage()
+        public async Task<List<HomePage_Product>> getListProductHomepage( int limit)
         {
             List<HomePage_Product> response = new List<HomePage_Product>(); 
             using (DataContext context = new DataContext())
             {
-                List<SqlProduct> products = context.products.Include(s=>s.category).Where(s=>s.isDeleted==false).ToList();
+                List<SqlProduct> products = context.products.Include(s=>s.category).Where(s=>s.isDeleted==false).Take(limit).ToList();
                 foreach (SqlProduct product in products)
                 {
                     HomePage_Product item = new HomePage_Product();
@@ -120,6 +120,7 @@ namespace cs_se347.APIs
                     item.ID = product.ID;
                     item.category = category.title;
                     item.productName = product.productName;
+                    item.productImage = product.productImage;
                     item.discount = product.discount;
                     item.productSalePrice = product.productSalePrice;
                     item.sold = product.sold;
@@ -148,7 +149,7 @@ namespace cs_se347.APIs
             return true;
         }
 
-        public async Task<List<HomePage_Product>> getProductsByShopId(long shopId)
+        public async Task<List<HomePage_Product>> getProductsByShopId(long shopId, int limit)
         {
             List<HomePage_Product> response = new List<HomePage_Product>();
             using (DataContext context = new DataContext())
