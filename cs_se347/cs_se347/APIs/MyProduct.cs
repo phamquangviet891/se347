@@ -103,17 +103,17 @@ namespace cs_se347.APIs
             return true ;
         }
 
-        public async Task<List<HomePage_Product>> getProductsByCategoryId(long categoryId)
+        public async Task<List<HomePage_Product>> getProductsByCategoryId(long categoryId, int limit)
         {
             List < HomePage_Product > response = new List<HomePage_Product> ();
             using (DataContext context = new DataContext())
             {
-                SqlCategory category = context.categories.Where(s => s.ID == categoryId).FirstOrDefault() ;
+                SqlCategory? category = context.categories.Where(s => s.ID == categoryId).FirstOrDefault() ;
                 if (category == null)
                 {
                     return response;
                 }
-                List<SqlProduct> products = context.products.Where(s=>s.category==category).ToList();
+                List<SqlProduct>? products = context.products.Where(s=>s.category==category).Take(limit).ToList();
                 foreach (SqlProduct product in products)
                 {
                     HomePage_Product item = new HomePage_Product();

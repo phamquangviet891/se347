@@ -9,17 +9,9 @@ namespace cs_se347.Controllers
     {
         [HttpPost]
         [Route("/login")]
-        public async Task<IActionResult> login(Login_DTO _DTO)
+        public IActionResult login(Login_DTO _DTO)
         {
-            bool tmp = await Program.api_user.login(_DTO.email, _DTO.password);
-            if (tmp)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            return Ok(Program.api_user.login(_DTO.email, _DTO.password));
         }
     }
 }

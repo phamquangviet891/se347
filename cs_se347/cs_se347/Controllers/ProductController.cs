@@ -29,26 +29,26 @@ namespace cs_se347.Controllers
 
         }
 
-        [HttpPost]
-        [Route("createProduct")]
-        public async Task<IActionResult> createNew(long shopId,long categoryId, Create_Product dto)
-        {
-            bool tmp = await Program.api_product.createNew(shopId,categoryId, dto.productName,dto.productImage,dto.productPrice, dto.productListImage,dto.discount,dto.options,dto.detail,dto.description);
-            if (tmp)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpPost]
+        //[Route("createProduct")]
+        //public async Task<IActionResult> createNew(long shopId,long categoryId, Create_Product dto)
+        //{
+        //    bool tmp = await Program.api_product.createNew(shopId,categoryId, dto.productName,dto.productImage,dto.productPrice, dto.productListImage,dto.discount,dto.options,dto.detail,dto.description);
+        //    if (tmp)
+        //    {
+        //        return Ok();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
         [HttpGet]
         [Route("/getListByCategoryId")]
-        public async Task<IActionResult> getProductsByCategoryId(long categoryId)
+        public async Task<IActionResult> getProductsByCategoryId(long categoryId, int limit)
         {
-            List<HomePage_Product> products = await Program.api_product.getProductsByCategoryId(categoryId);
+            List<HomePage_Product> products = await Program.api_product.getProductsByCategoryId(categoryId, limit);
             if (products == null)
             {
                 return BadRequest();
