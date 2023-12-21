@@ -26,6 +26,7 @@ namespace cs_se347.Model
         public int quantity { get; set; }
         public string option { get; set; }
         public long total { get; set; }
+
     }
 
 }

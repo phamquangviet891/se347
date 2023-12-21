@@ -29,6 +29,14 @@ namespace cs_se347.Controllers
 
         }
 
+        [HttpGet]
+
+        [Route("search")]
+        public IActionResult search(string key, int limit)
+        {
+            return Ok(Program.api_product.search(key,limit));
+        }
+
         //[HttpPost]
         //[Route("createProduct")]
         //public async Task<IActionResult> createNew(long shopId,long categoryId, Create_Product dto)

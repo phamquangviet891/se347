@@ -56,6 +56,7 @@ namespace cs_se347.APIs
                     response.options= product.options;
                     response.description = product.description;
                     response.detail = product.detail;
+                    response.inventory = product.inventory;
                 }
                 return response;
             }
@@ -160,7 +161,7 @@ namespace cs_se347.APIs
                     return response;
                 }    
 
-                List<SqlProduct> products = context.products.Include(s => s.category).Include(s=>s.shop).Where(s => s.isDeleted == false && s.shop==shop).ToList();
+                List<SqlProduct> products = context.products.Include(s => s.category).Include(s=>s.shop).Where(s => s.isDeleted == false && s.shop==shop).Take(limit).ToList();
                 foreach (SqlProduct product in products)
                 {
                     HomePage_Product item = new HomePage_Product();
@@ -169,6 +170,7 @@ namespace cs_se347.APIs
                     item.productName = product.productName;
                     item.productSalePrice = product.productSalePrice;
                     item.sold = product.sold;
+                    item.productImage = product.productImage;
                     item.rating = product.rating;
                     item.discount = product.discount;
                     item.giao_thu = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
@@ -178,5 +180,34 @@ namespace cs_se347.APIs
             }
             return response;
         }
+
+        public List<HomePage_Product> search(string key, int limit)
+        {
+            List<HomePage_Product> response = new List<HomePage_Product>();
+            using (DataContext context = new DataContext())
+            {
+                List<SqlProduct> products = context.products.Where(s => s.productName.ToLower().Contains(key.ToLower()) || s.description.ToLower().Contains(key.ToLower())).Include(s => s.category).Take(15).ToList();
+                if (products.Any())
+                {
+                    foreach (SqlProduct product in products)
+                    {
+                        HomePage_Product item = new HomePage_Product();
+                        item.ID = product.ID;
+                        item.category = product.category.title;
+                        item.productName = product.productName;
+                        item.productImage = product.productImage;
+                        item.productPrice = product.productPrice;
+                        item.productSalePrice = product.productSalePrice;
+                        item.sold = item.sold;
+                        item.rating = item.rating;
+                        item.discount = item.discount;
+                        item.giao_thu = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
+                        response.Add(item);
+                    }
+                }
+            }
+            return response;
+        }
+
     }
 }

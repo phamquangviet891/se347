@@ -18,10 +18,15 @@ namespace cs_se347.APIs
             public string productImage { get; set; }
             public string? option { get; set; }
             public int quantity { get; set; }
+            public long productAmount { get; set; }
+            public string giao_thu { get; set; } = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
+            public int inventory { get; set; } = 100;
+
         }
         public class Carts_DTO
         {
             public long cart_id { get; set; }
+            public long shop_id { get; set; }
             public string shop { get; set; } = "";
             public List<CartItem_DTO> list_cartItem { get; set; } = new List<CartItem_DTO>();
             //public List voucher 
@@ -132,6 +137,7 @@ namespace cs_se347.APIs
                     }
                     cart_DTO.shop = shop.name;
                     cart_DTO.cart_id = cart.ID;
+                    cart_DTO.shop_id = shop.ID;
 
                     List<CartItem_DTO> list_cartItem = new List<CartItem_DTO>();
                     List<SqlCartItem> cart_items = cart.cart_items;
@@ -157,6 +163,8 @@ namespace cs_se347.APIs
                             tmp.discount = item.product.discount;
                             tmp.productName = item.product.productName;
                             tmp.productImage = item.product.productImage;
+                            tmp.productAmount = item.product.productSalePrice * item.quantity;
+                            tmp.inventory = item.product.inventory;
                             list_cartItem.Add(tmp);
                         }
                     }

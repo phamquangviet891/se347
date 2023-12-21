@@ -1,4 +1,5 @@
 ﻿using cs_se347.Model;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace cs_se347.APIs
@@ -128,6 +129,26 @@ namespace cs_se347.APIs
                 }
             }
             return response;
+        }
+
+        public async Task<bool> updateDB_switch_to_Bitis_shop()
+        {
+            using(DataContext context = new DataContext())
+            {
+                List<SqlProduct> list_product = context.products.Include(s=>s.category).Where(s=>s.category.ID==9).ToList();
+                if (!list_product.Any()) { return false; }
+                SqlShop? shop = context.shops.Where(s=>s.ID==2).FirstOrDefault();
+                if(shop==null)
+                {
+                    return false;
+                }
+                foreach(SqlProduct item in list_product)
+                {
+                    item.shop=shop;
+                }
+                await context.SaveChangesAsync();
+                return true;
+            }
         }
 
     }

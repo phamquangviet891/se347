@@ -32,6 +32,7 @@ namespace cs_se347.Model
         public string productImage { get; set; }
         public string productName { get; set; }
         public int discount { get; set; }
+        public long productPrice { get; set; }
         public long productSalePrice { get; set; }
         public int sold { get; set; }
         public float rating { get; set; }
@@ -64,5 +65,8 @@ namespace cs_se347.Model
         public List<string> options { get; set; } 
         public string description { get; set; }
         public List<string> detail { get; set; } = new List<string>();
+        public int inventory { get; set; } = 100;
+        public long productAmount { get; set; }   
+
     }
 }
