@@ -28,7 +28,7 @@ namespace cs_se347.Controllers
         [Route("register")]
         public async Task<IActionResult> register([FromBody] Register_DTO _DTO)
         {
-            bool tmp = await Program.api_user.register(_DTO.userName, _DTO.email, _DTO.phoneNumber, _DTO.password);
+            bool tmp = await Program.api_user.register( _DTO.fullName,  _DTO.phoneNumber, _DTO.email, _DTO.password);
             if (tmp)
             {
                 return Ok();

@@ -31,15 +31,15 @@ namespace cs_se347.APIs
             }
         }
 
-        public async Task<bool> register(string username, string email, string phoneNumber, string password)
+        public async Task<bool> register(string fullName, string phoneNumber, string email, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(phoneNumber))
+            if (string.IsNullOrEmpty(fullName)|| string.IsNullOrEmpty(password) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(phoneNumber))
             {
                 return false;
             }
             using (DataContext context = new DataContext())
             {
-                bool tmp = context.users!.Where(s => s.email == email || s.userName == username).Any();
+                bool tmp = context.users!.Where(s => s.email == email).Any();
                 if (tmp)
                 {
                     return false;
@@ -47,10 +47,10 @@ namespace cs_se347.APIs
                 else
                 {
                     SqlUser user = new SqlUser();
+                    user.fullName = fullName;
                     user.email = email;
                     user.phoneNumber = phoneNumber;
                     user.password = password;
-                    user.userName = username;
                     context.users!.Add(user);
                     await context.SaveChangesAsync();
                     return true;
@@ -68,7 +68,6 @@ namespace cs_se347.APIs
                 {
                     return response;
                 }
-                response.userName = user.userName;
                 response.fullName = user.fullName;
                 response.email = user.email;
                 response.phoneNumber = user.phoneNumber;
