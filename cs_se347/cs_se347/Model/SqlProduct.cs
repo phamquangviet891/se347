@@ -51,22 +51,26 @@ namespace cs_se347.Model
         public string description { get; set; } = "";
 
     }
-    public class Detail_Product
+    public class Detail_Item
     {
-        public long ID { get; set; }
-        public string productName { get; set; } = "";
-        public long productPrice { get; set; } = 0;
-        public long productSalePrice { get; set; } = 0;
-        public int discount { get; set; } = 0;
-        public int sold { get; set; } = 0;
-        public float rating { get; set; } = 0;
-        public string productImage { get; set; } = "";
-        public List<string> productListImage { get; set; } = new List<string>();
-        public List<string> options { get; set; } 
-        public string description { get; set; }
-        public List<string> detail { get; set; } = new List<string>();
-        public int inventory { get; set; } = 100;
-        public long productAmount { get; set; }   
-
+        public string key { get; set; }
+        public string value { get; set; }
+        public class Detail_Product
+        {
+            public long ID { get; set; }
+            public string productName { get; set; } = "";
+            public long productPrice { get; set; } = 0;
+            public long productSalePrice { get; set; } = 0;
+            public int discount { get; set; } = 0;
+            public int sold { get; set; } = 0;
+            public float rating { get; set; } = 0;
+            public string productImage { get; set; } = "";
+            public List<string> productListImage { get; set; } = new List<string>();
+            public List<string> options { get; set; }
+            public string description { get; set; }
+            public List<Detail_Item> detail { get; set; } = new List<Detail_Item>();
+            public int inventory { get; set; } = 100;
+            public long shop_id { get; set; }
+        }
     }
 }

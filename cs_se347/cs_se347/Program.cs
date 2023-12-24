@@ -56,7 +56,8 @@ namespace cs_se347
                 //await api_category.initAsync();
                 //await api_shop.initAsync();
                 //await api_product.updateSalePrice();
-                await api_category.updateDB_switch_to_Bitis_shop();
+                //await api_category.updateDB_switch_to_Bitis_shop();
+                await api_product.tool_delete_space_in_product_option();
                 app.Run();
             }
             catch (Exception ex)

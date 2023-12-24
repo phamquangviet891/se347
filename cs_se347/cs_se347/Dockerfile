@@ -11,3 +11,6 @@ WORKDIR /app
 COPY --from=build /app ./
 EXPOSE 80
 ENTRYPOINT ["dotnet", "cs_se347.dll"]
+
+# docker build -t 20522153/se347-cs:1.0.1 .
+# docker push 20522153/se347-cs:1.0.1

@@ -70,7 +70,7 @@ namespace cs_se347.APIs
                         cart_item = new SqlCartItem();
                         if (product.options.Contains(option))
                         {
-                            cart_item.option = product.options[0] + " " + option;
+                            cart_item.option = option;
                         }
                         else
                         {
@@ -157,7 +157,10 @@ namespace cs_se347.APIs
                             tmp.cartItem_id = item.ID;
                             tmp.product_id = item.product.ID;
                             tmp.quantity = item.quantity;
-                            tmp.option = item.option;
+                            if (item.product.options.Any())
+                            {
+                                tmp.option = item.product.options[0] + " " + item.option;
+                            }
                             tmp.productSalePrice = item.product.productSalePrice;
                             tmp.productPrice = item.product.productPrice;
                             tmp.discount = item.product.discount;

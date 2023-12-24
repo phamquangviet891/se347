@@ -1,5 +1,6 @@
 ﻿using cs_se347.Model;
 using Microsoft.AspNetCore.Mvc;
+using static cs_se347.Model.Detail_Item;
 
 namespace cs_se347.Controllers
 {

@@ -2,18 +2,19 @@
 using cs_se347.Model;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using static cs_se347.Model.Detail_Item;
 
 namespace cs_se347.APIs
 {
     public class MyProduct
     {
         public MyProduct() { }
-        public async Task<List<HomePage_Product>> getListProductHomepage( int limit)
+        public async Task<List<HomePage_Product>> getListProductHomepage(int limit)
         {
-            List<HomePage_Product> response = new List<HomePage_Product>(); 
+            List<HomePage_Product> response = new List<HomePage_Product>();
             using (DataContext context = new DataContext())
             {
-                List<SqlProduct> products = context.products.Include(s=>s.category).Where(s=>s.isDeleted==false).Take(limit).ToList();
+                List<SqlProduct> products = context.products.Include(s => s.category).Where(s => s.isDeleted == false).Take(limit).ToList();
                 foreach (SqlProduct product in products)
                 {
                     HomePage_Product item = new HomePage_Product();
@@ -25,7 +26,7 @@ namespace cs_se347.APIs
                     item.sold = product.sold;
                     item.rating = product.rating;
                     item.discount = product.discount;
-                    item.giao_thu = "Giao vào "+ (DateTime.Today.AddDays(2)).ToString("dd/MM");
+                    item.giao_thu = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
 
                     response.Add(item);
                 }
@@ -37,7 +38,7 @@ namespace cs_se347.APIs
             Detail_Product response = new Detail_Product();
             using (DataContext context = new DataContext())
             {
-                SqlProduct product = context.products.Where(s => s.isDeleted == false && s.ID == productId).FirstOrDefault();
+                SqlProduct? product = context.products.Where(s => s.isDeleted == false && s.ID == productId).Include(s=>s.shop).AsNoTracking().FirstOrDefault();
                 if (product == null)
                 {
                     return response;
@@ -46,37 +47,47 @@ namespace cs_se347.APIs
                 {
                     response.ID = product.ID;
                     response.productName = product.productName;
-                    response.productPrice= product.productPrice;
+                    response.productPrice = product.productPrice;
                     response.sold = product.sold;
                     response.rating = product.rating;
-                    response.productSalePrice= product.productSalePrice;
+                    response.productSalePrice = product.productSalePrice;
                     response.discount = product.discount;
-                    response.productImage= product.productImage;
-                    response.productListImage= product.productListImage;
-                    response.options= product.options;
+                    response.productImage = product.productImage;
+                    response.productListImage = product.productListImage;
+                    response.options = product.options;
                     response.description = product.description;
-                    response.detail = product.detail;
+                    List< Detail_Item > detail = new List<Detail_Item>();
+                    //response.detail = product.detail;
+                    for(int i=1;i< product.detail.Count()-1; i+=2)
+                    {
+                        Detail_Item item = new Detail_Item();
+                        item.key = product.detail[i];
+                        item.value= product.detail[i+1];
+                        detail.Add(item);
+                    }
+                    response.detail = detail;   
                     response.inventory = product.inventory;
+                    response.shop_id = product.shop.ID;
                 }
                 return response;
             }
         }
 
-        public async Task<bool> createNew(long shopId,long categoryId , string productName, string productImage, long productPrice, List<string> productListImage,int discount, List<string> options, List<string> detail, string description)
+        public async Task<bool> createNew(long shopId, long categoryId, string productName, string productImage, long productPrice, List<string> productListImage, int discount, List<string> options, List<string> detail, string description)
         {
             using (DataContext context = new DataContext())
             {
-                SqlShop shop = context.shops.Where(s=>s.ID==shopId).FirstOrDefault();
+                SqlShop shop = context.shops.Where(s => s.ID == shopId).FirstOrDefault();
                 if (shop == null)
                 {
                     return false;
                 }
-                SqlCategory category = context.categories.Where(s=>s.ID == categoryId).FirstOrDefault();
+                SqlCategory category = context.categories.Where(s => s.ID == categoryId).FirstOrDefault();
                 if (category == null)
                 {
                     return false;
                 }
-                SqlProduct existing = context.products.Where(s=>s.productName==productName).FirstOrDefault();
+                SqlProduct existing = context.products.Where(s => s.productName == productName).FirstOrDefault();
                 if (existing != null)
                 {
                     return false;
@@ -89,9 +100,9 @@ namespace cs_se347.APIs
                 product.discount = discount;
                 product.options = options;
                 product.detail = detail;
-                product.shop=shop;
-                product.category=category; 
-                product.description= description;
+                product.shop = shop;
+                product.category = category;
+                product.description = description;
 
                 product.rating = DataContext.GenerateRandomRating();
                 product.sold = DataContext.GenerateRandomValue();
@@ -100,21 +111,21 @@ namespace cs_se347.APIs
                 context.products.Add(product);
                 await context.SaveChangesAsync();
             }
-            
-            return true ;
+
+            return true;
         }
 
         public async Task<List<HomePage_Product>> getProductsByCategoryId(long categoryId, int limit)
         {
-            List < HomePage_Product > response = new List<HomePage_Product> ();
+            List<HomePage_Product> response = new List<HomePage_Product>();
             using (DataContext context = new DataContext())
             {
-                SqlCategory? category = context.categories.Where(s => s.ID == categoryId).FirstOrDefault() ;
+                SqlCategory? category = context.categories.Where(s => s.ID == categoryId).FirstOrDefault();
                 if (category == null)
                 {
                     return response;
                 }
-                List<SqlProduct>? products = context.products.Where(s=>s.category==category).Take(limit).ToList();
+                List<SqlProduct>? products = context.products.Where(s => s.category == category).Take(limit).ToList();
                 foreach (SqlProduct product in products)
                 {
                     HomePage_Product item = new HomePage_Product();
@@ -125,7 +136,7 @@ namespace cs_se347.APIs
                     item.discount = product.discount;
                     item.productSalePrice = product.productSalePrice;
                     item.sold = product.sold;
-                    item.rating= product.rating;
+                    item.rating = product.rating;
                     item.giao_thu = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
                     response.Add(item);
                 }
@@ -135,12 +146,13 @@ namespace cs_se347.APIs
 
         public async Task<bool> updateSalePrice()
         {
-            using(DataContext context = new DataContext())
+            using (DataContext context = new DataContext())
             {
                 List<SqlProduct> products = context.products.ToList();
-                foreach(SqlProduct product in products)
+                foreach (SqlProduct product in products)
                 {
-                    if(product != null) {
+                    if (product != null)
+                    {
                         decimal roundedValue = ((product.productPrice * 100 - product.productPrice * product.discount) / 100 / 1000) * 1000;
                         product.productSalePrice = (int)roundedValue;
                     }
@@ -155,13 +167,13 @@ namespace cs_se347.APIs
             List<HomePage_Product> response = new List<HomePage_Product>();
             using (DataContext context = new DataContext())
             {
-                SqlShop shop =context.shops.Where(s=>s.ID== shopId).FirstOrDefault();   
-                if(shop == null)
+                SqlShop shop = context.shops.Where(s => s.ID == shopId).FirstOrDefault();
+                if (shop == null)
                 {
                     return response;
-                }    
+                }
 
-                List<SqlProduct> products = context.products.Include(s => s.category).Include(s=>s.shop).Where(s => s.isDeleted == false && s.shop==shop).Take(limit).ToList();
+                List<SqlProduct> products = context.products.Include(s => s.category).Include(s => s.shop).Where(s => s.isDeleted == false && s.shop == shop).Take(limit).ToList();
                 foreach (SqlProduct product in products)
                 {
                     HomePage_Product item = new HomePage_Product();
@@ -207,6 +219,34 @@ namespace cs_se347.APIs
                 }
             }
             return response;
+        }
+
+
+        public async Task<bool> tool_delete_space_in_product_option()
+        {
+            using (DataContext context = new DataContext())
+            {
+                List<SqlProduct> products = context.products.Where(s => s.options.Any() == true).ToList();
+                foreach (SqlProduct sqlProduct in products)
+                {
+                    for (int i = 1; i < sqlProduct.options.Count; i++)
+                    {
+                        if (sqlProduct.options[i].Last() == ' ')
+                        {
+                            sqlProduct.options[i] = sqlProduct.options[i].TrimEnd();
+                        }
+                        if (sqlProduct.options[i].First() == ' ')
+                        {
+                            sqlProduct.options[i] = sqlProduct.options[i].TrimStart();
+
+                        }
+                    }
+                    context.Update(sqlProduct);
+                }
+                await context.SaveChangesAsync();
+            }
+
+            return true;
         }
 
     }
