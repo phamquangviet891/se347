@@ -7,12 +7,13 @@ namespace cs_se347.Model
     public class SqlUser
     {
         [Key]
-        public long ID { get; set; }
+        public long ID { get; set; } = DataContext.GenerateRandomValue();
         public string fullName { get; set; } = "";
         public string email { get; set; } = "";
         public string phoneNumber { get; set; } = "";
         public string password { get; set; } = "";
         public string avatar { get; set; } = "";
+        public List<SqlOrder> orders { get; set; }
     }
     public class Login_DTO
     {

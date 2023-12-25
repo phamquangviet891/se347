@@ -33,12 +33,12 @@ namespace cs_se347.Controllers
                 return BadRequest();
             }
         }
-        //[HttpGet]
-        //[Route("getOrdersByUserId")]
-        //public async Task<IActionResult> getOrdersByUserId(long userId, int status=-1, int page=1, int page_size=10)
-        //{
-        //    return Ok(Program.api_order.getOrdersByUserId(userId, status, page, page_size));
-        //}
+        [HttpGet]
+        [Route("getOrdersByUserId")]
+        public async Task<IActionResult> getOrdersByUserId(long userId,int status)
+        {
+            return Ok(Program.api_order.getOrdersByUserId(userId,status));
+        }
 
     }
 }

@@ -14,6 +14,7 @@ namespace cs_se347.Model
         public string danh_gia { get; set; }
         public bool isDeleted { get; set; } = false;
         public List<SqlProduct>? products { get; set; }
+        public List<SqlOrderItem>? orders { get; set; }
 
     }
 

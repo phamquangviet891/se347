@@ -8,11 +8,18 @@ namespace cs_se347.Model
     {
         [Key]
         public long ID { get; set; }
-        public Status_Order status { get; set; } = Status_Order.cho_thanh_toan;
+        public int status { get; set; } = 0;
+        //-1: tat ca
+        //0 : cho thanh toan
+        //1: dang xu ly
+        //2: dang van chuyen
+        //3: da giao
+        //4: da huy
+
         public SqlUser? user { get; set; }
         public string? address { get; set; } //address serialize 
         public DateTime time { get; set; } = DateTime.UtcNow;
-        public List<SqlOrderItem> items { get; set; }
+        public List<SqlOrderItem>? items { get; set; }
 
     }
     public enum Status_Order

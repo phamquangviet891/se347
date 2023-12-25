@@ -68,7 +68,7 @@ namespace cs_se347.Migrations
 
                     b.HasIndex("userID");
 
-                    b.ToTable("tb_address");
+                    b.ToTable("tb_address", (string)null);
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlCart", b =>
@@ -100,7 +100,7 @@ namespace cs_se347.Migrations
 
                     b.HasIndex("userID");
 
-                    b.ToTable("tb_cart");
+                    b.ToTable("tb_cart", (string)null);
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlCartItem", b =>
@@ -142,7 +142,7 @@ namespace cs_se347.Migrations
 
                     b.HasIndex("productID");
 
-                    b.ToTable("tb_cartItem");
+                    b.ToTable("tb_cartItem", (string)null);
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlCategory", b =>
@@ -166,7 +166,7 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_category");
+                    b.ToTable("tb_category", (string)null);
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlOrder", b =>
@@ -193,7 +193,7 @@ namespace cs_se347.Migrations
 
                     b.HasIndex("userID");
 
-                    b.ToTable("tb_order");
+                    b.ToTable("tb_order", (string)null);
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlOrderItem", b =>
@@ -219,7 +219,7 @@ namespace cs_se347.Migrations
 
                     b.HasIndex("shopID");
 
-                    b.ToTable("tb_orderItem");
+                    b.ToTable("tb_orderItem", (string)null);
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlProduct", b =>
@@ -287,7 +287,7 @@ namespace cs_se347.Migrations
 
                     b.HasIndex("shopID");
 
-                    b.ToTable("tb_product");
+                    b.ToTable("tb_product", (string)null);
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlShop", b =>
@@ -318,7 +318,7 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_shop");
+                    b.ToTable("tb_shop", (string)null);
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlUser", b =>
@@ -351,7 +351,7 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("tb_user");
+                    b.ToTable("tb_user", (string)null);
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlAddress", b =>

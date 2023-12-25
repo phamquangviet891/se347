@@ -70,5 +70,10 @@ namespace cs_se347.Model
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseNpgsql(configSql);
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SqlUser>().HasMany<SqlOrder>(s=>s.orders).WithOne(s=>s.user);   
+           // modelBuilder.Entity<SqlShop>().HasMany<SqlOrderItem>(s=>s.orders).WithOne(s=>s.shop);
+        }
     }
 }

@@ -19,50 +19,65 @@ namespace cs_se347.APIs
 
             using (DataContext context = new DataContext())
             {
-                List<SqlCartItem> list_cart_item = context.cart_items.Where(s => list_cart_item_id.Contains(s.ID)).Include(s => s.cart).ThenInclude(s => s.shop).ToList();
+                List<SqlCartItem> list_cart_item = context.cart_items.Include(s => s.product).Where(s => list_cart_item_id.Contains(s.ID)).Include(s => s.cart).ThenInclude(s => s.shop).ToList();
                 if (!list_cart_item.Any())
                 {
                     return response;
                 }
-                SqlAddress? address = context.addresses.Where(s => s.ID == address_id).Include(s=>s.user).AsNoTracking().FirstOrDefault();
+                SqlAddress? address = context.addresses.Where(s => s.ID == address_id).Include(s => s.user).AsNoTracking().FirstOrDefault();
                 if (address == null)
                 {
                     return response;
                 }
-                newOrder.user = address.user ;
+                SqlUser user = context.users.Where(s => s.ID == address.user.ID).FirstOrDefault();
+
+                newOrder.user = user;
                 newOrder.address = JsonConvert.SerializeObject(address);
                 newOrder.ID = DataContext.GenerateRandomValue_Order_id();
-                List<SqlOrderItem> items= new List<SqlOrderItem>();
-                newOrder.items = items;
-                context.orders.Add(newOrder);
-                while (list_cart_item.Where(s => s.status == Status_Cart_item.active).Count() > 0)
+                response = newOrder.ID;
+                List<SqlOrderItem> items = new List<SqlOrderItem>();
+                List<SqlCart> carts = new List<SqlCart>();
+                foreach (SqlCartItem item in list_cart_item)
                 {
-                    SqlOrderItem orderItem= new SqlOrderItem();
-                    SqlCartItem item = list_cart_item.Where(s=>s.status == Status_Cart_item.active).FirstOrDefault();
-                    orderItem.shop = item.cart.shop;
-                    orderItem.order = newOrder;
-                    newOrder.items.Add(orderItem);
-                    List<string> list_cart_items = new List<string>();
-                    for (int i = 0; i < list_cart_item.Count; i++)
+                    if (!carts.Contains(item.cart))
                     {
-                        if (list_cart_item[i].cart.shop == orderItem.shop)
-                        {
-                            list_cart_item[i].status = Status_Cart_item.order;
-                            string data = JsonConvert.SerializeObject(list_cart_item[i], Formatting.Indented,
-                                                                                new JsonSerializerSettings()
-                                                                                {
-                                                                                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                                                                                });
-                            //list_cart_item.Remove(list_cart_item[i]);
-                            //i--;
-                            list_cart_items.Insert(0,data);
-                        }
+                        carts.Add(item.cart);
                     }
-                    orderItem.list_cart_item = list_cart_items;
-                    context.orders_items.Add(orderItem);
-                    //int _rows = await context.SaveChangesAsync();
+                }
+
+                foreach (SqlCart cart in carts)
+                {
+                    List<SqlCartItem> cart_items = list_cart_item.Where(s => s.cart == cart).ToList();
+                    SqlOrderItem order_item = new SqlOrderItem();
+                    order_item.order = newOrder;
+                    order_item.shop = cart.shop;
+                    order_item.ID = DataContext.GenerateRandomValue_Order_id();
+                    List<string> _list_cart_item = new List<string>();
+                    foreach (SqlCartItem cart_item in cart_items)
+                    {
+                        string data = JsonConvert.SerializeObject(cart_item, Formatting.Indented,
+                                                               new JsonSerializerSettings()
+                                                               {
+                                                                   ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                                                               });
+                        _list_cart_item.Add(data);
+                        cart_item.status = Status_Cart_item.order;
+                    }
+                    order_item.list_cart_item = _list_cart_item;
+                    context.orders_items.Add(order_item);
+                    newOrder.items.Add(order_item);
                 }
                 context.orders.Add(newOrder);
+                if (user.orders.Any())
+                {
+                    user.orders.Add(newOrder);
+                }
+                else
+                {
+                    List<SqlOrder> orders = new List<SqlOrder>();
+                    orders.Add(newOrder);
+                    user.orders = orders;
+                }
                 int rows = await context.SaveChangesAsync();
                 return response;
             }
@@ -105,7 +120,7 @@ namespace cs_se347.APIs
             public string shopName { get; set; } = "";
             public long shop_id { get; set; }
             public List<OrderItem_DTO> list_orderItem { get; set; } = new List<OrderItem_DTO>();
-            public string order_status { get; set; }
+            public int order_status { get; set; }
             //public List voucher 
         }
         //public string order_get_status(int enum1)
@@ -125,64 +140,93 @@ namespace cs_se347.APIs
         //    }
         //    return "";
         //}
+        public List<Orders_DTO> getOrdersByUserId(long userId,int status)
+        {
+            List<Orders_DTO> response = new List<Orders_DTO>();
+            using (DataContext context = new DataContext())
+            {
+                SqlUser? user = context.users.Include(s => s.orders).ThenInclude(s=>s.items).Where(s => s.ID == userId).AsNoTracking().FirstOrDefault();
+                if (user == null)
+                {
+                    return response;
+                }
+                if (!user.orders.Any())
+                {
+                    return response;
+                }
+                
+                List<SqlOrder> orders = user.orders.Where(s=>s.status==status).ToList();
+                if(!orders.Any()) {
+                    return response;
+                }
+                foreach (SqlOrder order in orders)
+                {
+                    foreach(SqlOrderItem item in order.items)
+                    {
+
+                    }
+                }
+            }
+            return response;
+        }
         //public List<Orders_DTO> getOrdersByUserId(long userId, int status, int page, int page_size)
         //{
         //    List<Orders_DTO> response = new List<Orders_DTO>();
 
-        //    //using (DataContext context = new DataContext())
-        //    //{
-        //    //    SqlUser? user = context.users.Where(s => s.ID == userId).FirstOrDefault();
-        //    //    if (user == null)
-        //    //    {
-        //    //        return response;
-        //    //    }
-        //    //    List<SqlOrder>? orders;
-        //    //    if (status == -1)
-        //    //    {
-        //    //        orders = context.orders.Where(s => s.user == user).Take(page * page_size).Include(s => s.shop).ToList();
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        orders = context.orders.Where(s => s.user == user && ((int)s.status) == status).Take(page * page_size).Include(s => s.shop).ToList();
-        //    //    }
-        //    //    foreach (SqlOrder order in orders)
-        //    //    {
-        //    //        Orders_DTO my_order = new Orders_DTO();
-        //    //        List<SqlCartItem> cart_items = new List<SqlCartItem>();
-        //    //        foreach (string cart_item in order.list_cart_item)
-        //    //        {
-        //    //            //string data = JsonConvert.SerializeObject(cart_item, Formatting.Indented,
-        //    //            //                                                       new JsonSerializerSettings()
-        //    //            //                                                       {
-        //    //            //                                                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-        //    //            //                                                       });
-        //    //            SqlCartItem tmp = JsonConvert.DeserializeObject<SqlCartItem>(cart_item);
-        //    //            cart_items.Add(tmp);
-        //    //        }
+        //    using (DataContext context = new DataContext())
+        //    {
+        //        SqlUser? user = context.users.Where(s => s.ID == userId).FirstOrDefault();
+        //        if (user == null)
+        //        {
+        //            return response;
+        //        }
+        //        List<SqlOrder>? orders;
+        //        if (status == -1)
+        //        {
+        //            orders = context.orders.Where(s => s.user == user).Take(page * page_size).Include(s => s.shop).ToList();
+        //        }
+        //        else
+        //        {
+        //            orders = context.orders.Where(s => s.user == user && ((int)s.status) == status).Take(page * page_size).Include(s => s.shop).ToList();
+        //        }
+        //        foreach (SqlOrder order in orders)
+        //        {
+        //            Orders_DTO my_order = new Orders_DTO();
+        //            List<SqlCartItem> cart_items = new List<SqlCartItem>();
+        //            foreach (string cart_item in order.list_cart_item)
+        //            {
+        //                //string data = JsonConvert.SerializeObject(cart_item, Formatting.Indented,
+        //                //                                                       new JsonSerializerSettings()
+        //                //                                                       {
+        //                //                                                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+        //                //                                                       });
+        //                SqlCartItem tmp = JsonConvert.DeserializeObject<SqlCartItem>(cart_item);
+        //                cart_items.Add(tmp);
+        //            }
 
-        //    //        List<OrderItem_DTO> order_items = new List<OrderItem_DTO>();
-        //    //        foreach (SqlCartItem item in cart_items)
-        //    //        {
-        //    //            OrderItem_DTO tmp = new OrderItem_DTO();
-        //    //            tmp.product_id = item.product.ID;
-        //    //            tmp.productName = item.product.productName;
-        //    //            //chưa áp voucher
-        //    //            tmp.productSalePrice = item.product.productSalePrice;
-        //    //            tmp.productImage = item.product.productImage;
-        //    //            tmp.option = item.option;
-        //    //            tmp.quantity = item.quantity;
-        //    //            tmp.cart_item_id = item.ID;
-        //    //            order_items.Add(tmp);
-        //    //        }
-        //    //        my_order.list_orderItem = order_items;
-        //    //        my_order.order_status = order.status.ToString();
-        //    //        my_order.order_id = order.ID;
-        //    //        my_order.shopName = order.shop.name;
-        //    //        my_order.shop_id = order.shop.ID;
-        //    //        //my_order.shop = order.list_cart_item[0].product.shop.name;
-        //    //        response.Insert(0, my_order);
-        //    //    }
-        //    //}
+        //            List<OrderItem_DTO> order_items = new List<OrderItem_DTO>();
+        //            foreach (SqlCartItem item in cart_items)
+        //            {
+        //                OrderItem_DTO tmp = new OrderItem_DTO();
+        //                tmp.product_id = item.product.ID;
+        //                tmp.productName = item.product.productName;
+        //                //chưa áp voucher
+        //                tmp.productSalePrice = item.product.productSalePrice;
+        //                tmp.productImage = item.product.productImage;
+        //                tmp.option = item.option;
+        //                tmp.quantity = item.quantity;
+        //                tmp.cart_item_id = item.ID;
+        //                order_items.Add(tmp);
+        //            }
+        //            my_order.list_orderItem = order_items;
+        //            my_order.order_status = order.status.ToString();
+        //            my_order.order_id = order.ID;
+        //            my_order.shopName = order.shop.name;
+        //            my_order.shop_id = order.shop.ID;
+        //            //my_order.shop = order.list_cart_item[0].product.shop.name;
+        //            response.Insert(0, my_order);
+        //        }
+        //    }
 
         //    return response;
         //}
