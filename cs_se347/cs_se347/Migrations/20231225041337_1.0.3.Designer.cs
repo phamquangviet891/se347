@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using cs_se347.Model;
@@ -12,9 +13,10 @@ using cs_se347.Model;
 namespace cs_se347.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231225041337_1.0.3")]
+    partial class _103
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,6 +113,9 @@ namespace cs_se347.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
 
+                    b.Property<long?>("SqlOrderItemID")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("cartID")
                         .HasColumnType("bigint");
 
@@ -137,6 +142,8 @@ namespace cs_se347.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("SqlOrderItemID");
 
                     b.HasIndex("cartID");
 
@@ -177,8 +184,8 @@ namespace cs_se347.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
 
-                    b.Property<string>("address")
-                        .HasColumnType("text");
+                    b.Property<long?>("addressID")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("status")
                         .HasColumnType("integer");
@@ -190,6 +197,8 @@ namespace cs_se347.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("addressID");
 
                     b.HasIndex("userID");
 
@@ -203,9 +212,6 @@ namespace cs_se347.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
-
-                    b.Property<List<string>>("list_cart_item")
-                        .HasColumnType("text[]");
 
                     b.Property<long>("orderID")
                         .HasColumnType("bigint");
@@ -386,6 +392,10 @@ namespace cs_se347.Migrations
 
             modelBuilder.Entity("cs_se347.Model.SqlCartItem", b =>
                 {
+                    b.HasOne("cs_se347.Model.SqlOrderItem", null)
+                        .WithMany("list_cart_item")
+                        .HasForeignKey("SqlOrderItemID");
+
                     b.HasOne("cs_se347.Model.SqlCart", "cart")
                         .WithMany("cart_items")
                         .HasForeignKey("cartID")
@@ -405,9 +415,15 @@ namespace cs_se347.Migrations
 
             modelBuilder.Entity("cs_se347.Model.SqlOrder", b =>
                 {
+                    b.HasOne("cs_se347.Model.SqlAddress", "address")
+                        .WithMany()
+                        .HasForeignKey("addressID");
+
                     b.HasOne("cs_se347.Model.SqlUser", "user")
                         .WithMany()
                         .HasForeignKey("userID");
+
+                    b.Navigation("address");
 
                     b.Navigation("user");
                 });
@@ -458,6 +474,11 @@ namespace cs_se347.Migrations
             modelBuilder.Entity("cs_se347.Model.SqlOrder", b =>
                 {
                     b.Navigation("items");
+                });
+
+            modelBuilder.Entity("cs_se347.Model.SqlOrderItem", b =>
+                {
+                    b.Navigation("list_cart_item");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlShop", b =>

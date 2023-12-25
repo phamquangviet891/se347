@@ -1,6 +1,7 @@
 ﻿using cs_se347.Model;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Net.Mime;
 using static cs_se347.APIs.MyCart;
 using static cs_se347.Controllers.OrderController;
@@ -13,60 +14,56 @@ namespace cs_se347.APIs
         public async Task<long> addOrder(List<long> list_cart_item_id, long address_id)
         {
             long response = -1;
-            //SqlOrder newOrder = new SqlOrder();
-            //using (DataContext context = new DataContext())
-            //{
-            //    List<SqlCartItem> list_cart_item = context.cart_items.Include(s => s.product).Where(s => list_cart_item_id.Contains(s.ID)).Include(s => s.cart).ThenInclude(s => s.shop).ToList();
-            //    if (!list_cart_item.Any())
-            //    {
-            //        return response;
-            //    }
-            //    List<SqlCartItem> tmp = list_cart_item;
-            //    SqlAddress? address = context.addresses.Where(s => s.ID == address_id).Include(s => s.user).FirstOrDefault();
-            //    if (address == null)
-            //    {
-            //        return response;
-            //    }
-
-            //    SqlUser user = address.user;
+            SqlOrder newOrder = new SqlOrder();
 
 
-            //    while (tmp.Where(s => s.status == Status_Cart_item.active).Count() > 0)
-            //    {
-            //        // SqlShop shop = list_cart_item[0].cart.shop;
-            //        SqlShop shop = context.shops.Where(s => s.ID == tmp[0].cart.shop.ID).FirstOrDefault();
-            //        //newOrder.ID = DataContext.GenerateId();
-            //        newOrder.user = user;
-            //        newOrder.shop = shop;
-            //        newOrder.address = JsonConvert.SerializeObject(address, Formatting.Indented,
-            //                                                                    new JsonSerializerSettings()
-            //                                                                    {
-            //                                                                        ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            //                                                                    });
-            //        List<string> seri_cart_items = new List<string>();
-            //        for (int i = 0; i < tmp.Count; i++)
-            //        {
-            //            if (tmp[i].cart.shop.ID == shop.ID)
-            //            {
-            //                list_cart_item[i].status = Status_Cart_item.order;
-            //                list_cart_item[i].order = newOrder;
-            //                string data = JsonConvert.SerializeObject(list_cart_item[i], Formatting.Indented,
-            //                                                                    new JsonSerializerSettings()
-            //                                                                    {
-            //                                                                        ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            //                                                                    });
-            //                seri_cart_items.Add(data);
-            //                //context.cart_items.Update(list_cart_item[i]);
-            //                //tmp.Remove(tmp[i]);
-            //            }
-            //        }
-            //        newOrder.list_cart_item = seri_cart_items;
-            //        newOrder.ID = DataContext.GenerateRandomValue_Order_id();
-            //        response = newOrder.ID;
-            //        context.orders.Add(newOrder);
-
-            //    }
-            //    int rows = await context.SaveChangesAsync();
+            using (DataContext context = new DataContext())
+            {
+                List<SqlCartItem> list_cart_item = context.cart_items.Where(s => list_cart_item_id.Contains(s.ID)).Include(s => s.cart).ThenInclude(s => s.shop).ToList();
+                if (!list_cart_item.Any())
+                {
+                    return response;
+                }
+                SqlAddress? address = context.addresses.Where(s => s.ID == address_id).Include(s=>s.user).AsNoTracking().FirstOrDefault();
+                if (address == null)
+                {
+                    return response;
+                }
+                newOrder.user = address.user ;
+                newOrder.address = JsonConvert.SerializeObject(address);
+                newOrder.ID = DataContext.GenerateRandomValue_Order_id();
+                List<SqlOrderItem> items= new List<SqlOrderItem>();
+                newOrder.items = items;
+                context.orders.Add(newOrder);
+                while (list_cart_item.Where(s => s.status == Status_Cart_item.active).Count() > 0)
+                {
+                    SqlOrderItem orderItem= new SqlOrderItem();
+                    SqlCartItem item = list_cart_item.Where(s=>s.status == Status_Cart_item.active).FirstOrDefault();
+                    orderItem.shop = item.cart.shop;
+                    orderItem.order = newOrder;
+                    newOrder.items.Add(orderItem);
+                    List<string> list_cart_items = new List<string>();
+                    for (int i = 0; i < list_cart_item.Count; i++)
+                    {
+                        if (list_cart_item[i].cart.shop == orderItem.shop)
+                        {
+                            list_cart_item[i].status = Status_Cart_item.order;
+                            string data = JsonConvert.SerializeObject(list_cart_item[i], Formatting.Indented,
+                                                                                new JsonSerializerSettings()
+                                                                                {
+                                                                                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                                                                                });
+                            //list_cart_item.Remove(list_cart_item[i]);
+                            //i--;
+                            list_cart_items.Insert(0,data);
+                        }
+                    }
+                    orderItem.list_cart_item = list_cart_items;
+                    context.orders_items.Add(orderItem);
+                    //int _rows = await context.SaveChangesAsync();
+                }
+                context.orders.Add(newOrder);
+                int rows = await context.SaveChangesAsync();
                 return response;
             }
         }
@@ -258,4 +255,5 @@ namespace cs_se347.APIs
 
 
     }
+}
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using cs_se347.Model;
@@ -12,9 +13,10 @@ using cs_se347.Model;
 namespace cs_se347.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231225040607_1.0.2")]
+    partial class _102
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,8 +179,11 @@ namespace cs_se347.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
 
-                    b.Property<string>("address")
-                        .HasColumnType("text");
+                    b.Property<long?>("addressID")
+                        .HasColumnType("bigint");
+
+                    b.Property<List<string>>("cart_items")
+                        .HasColumnType("text[]");
 
                     b.Property<int>("status")
                         .HasColumnType("integer");
@@ -191,35 +196,11 @@ namespace cs_se347.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("addressID");
+
                     b.HasIndex("userID");
 
                     b.ToTable("tb_order");
-                });
-
-            modelBuilder.Entity("cs_se347.Model.SqlOrderItem", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
-
-                    b.Property<List<string>>("list_cart_item")
-                        .HasColumnType("text[]");
-
-                    b.Property<long>("orderID")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("shopID")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("orderID");
-
-                    b.HasIndex("shopID");
-
-                    b.ToTable("tb_orderItem");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlProduct", b =>
@@ -405,30 +386,17 @@ namespace cs_se347.Migrations
 
             modelBuilder.Entity("cs_se347.Model.SqlOrder", b =>
                 {
+                    b.HasOne("cs_se347.Model.SqlAddress", "address")
+                        .WithMany()
+                        .HasForeignKey("addressID");
+
                     b.HasOne("cs_se347.Model.SqlUser", "user")
                         .WithMany()
                         .HasForeignKey("userID");
 
+                    b.Navigation("address");
+
                     b.Navigation("user");
-                });
-
-            modelBuilder.Entity("cs_se347.Model.SqlOrderItem", b =>
-                {
-                    b.HasOne("cs_se347.Model.SqlOrder", "order")
-                        .WithMany("items")
-                        .HasForeignKey("orderID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cs_se347.Model.SqlShop", "shop")
-                        .WithMany()
-                        .HasForeignKey("shopID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("order");
-
-                    b.Navigation("shop");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlProduct", b =>
@@ -453,11 +421,6 @@ namespace cs_se347.Migrations
             modelBuilder.Entity("cs_se347.Model.SqlCart", b =>
                 {
                     b.Navigation("cart_items");
-                });
-
-            modelBuilder.Entity("cs_se347.Model.SqlOrder", b =>
-                {
-                    b.Navigation("items");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlShop", b =>

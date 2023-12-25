@@ -16,7 +16,7 @@ namespace cs_se347.Model
         public DateTime modified_at { get; set; } = DateTime.Now.ToUniversalTime();
         public bool isDeleted { get; set; } = false;
         public Status_Cart_item status { get; set; } = Status_Cart_item.active;
-        public SqlOrder? order { get; set; }
+        
     }
     public enum Status_Cart_item
     {

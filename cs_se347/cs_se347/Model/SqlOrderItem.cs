@@ -10,7 +10,7 @@ namespace cs_se347.Model
         public long ID { get; set; }
         public SqlShop shop { get; set; }
         public SqlOrder order { get; set; }
-        public List<SqlCartItem>? list_cart_item { get; set; }// serialize
+        public List<string>? list_cart_item { get; set; }// serialize
 
 
     }

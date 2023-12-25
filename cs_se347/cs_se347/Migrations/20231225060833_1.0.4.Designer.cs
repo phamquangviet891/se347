@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using cs_se347.Model;
@@ -12,9 +13,10 @@ using cs_se347.Model;
 namespace cs_se347.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231225060833_1.0.4")]
+    partial class _104
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,6 +113,9 @@ namespace cs_se347.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
 
+                    b.Property<long?>("SqlOrderItemID")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("cartID")
                         .HasColumnType("bigint");
 
@@ -137,6 +142,8 @@ namespace cs_se347.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("SqlOrderItemID");
 
                     b.HasIndex("cartID");
 
@@ -203,9 +210,6 @@ namespace cs_se347.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("ID"));
-
-                    b.Property<List<string>>("list_cart_item")
-                        .HasColumnType("text[]");
 
                     b.Property<long>("orderID")
                         .HasColumnType("bigint");
@@ -386,6 +390,10 @@ namespace cs_se347.Migrations
 
             modelBuilder.Entity("cs_se347.Model.SqlCartItem", b =>
                 {
+                    b.HasOne("cs_se347.Model.SqlOrderItem", null)
+                        .WithMany("list_cart_item")
+                        .HasForeignKey("SqlOrderItemID");
+
                     b.HasOne("cs_se347.Model.SqlCart", "cart")
                         .WithMany("cart_items")
                         .HasForeignKey("cartID")
@@ -458,6 +466,11 @@ namespace cs_se347.Migrations
             modelBuilder.Entity("cs_se347.Model.SqlOrder", b =>
                 {
                     b.Navigation("items");
+                });
+
+            modelBuilder.Entity("cs_se347.Model.SqlOrderItem", b =>
+                {
+                    b.Navigation("list_cart_item");
                 });
 
             modelBuilder.Entity("cs_se347.Model.SqlShop", b =>
