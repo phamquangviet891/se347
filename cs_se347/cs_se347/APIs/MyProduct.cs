@@ -58,7 +58,12 @@ namespace cs_se347.APIs
                     response.description = product.description;
                     List< Detail_Item > detail = new List<Detail_Item>();
                     //response.detail = product.detail;
-                    for(int i=1;i< product.detail.Count()-1; i+=2)
+                    int i = 0;
+                    if (product.options[0].CompareTo("Thông tin chi tiết") == 0)
+                    {
+                        i = 1;
+                    }
+                    for(;i< product.detail.Count()-1; i+=2)
                     {
                         Detail_Item item = new Detail_Item();
                         item.key = product.detail[i];

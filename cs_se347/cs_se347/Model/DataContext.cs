@@ -57,6 +57,13 @@ namespace cs_se347.Model
 
             return random.Next(minValue, maxValue + 1); // +1 to include the maxValue
         }
+        public static int GenerateRandomValue_Order_id()
+        {
+            int minValue = 200000000;
+            int maxValue = 999999999;
+
+            return random.Next(minValue, maxValue + 1); // +1 to include the maxValue
+        }
         public static string configSql = "Host=dpg-clnj3ihll56s73firn4g-a.singapore-postgres.render.com:5432;Database=se347;Username=killerdroy;Password=BsDnku4ycfBdTFLPIGGLPiPyDtn65lBJ";
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

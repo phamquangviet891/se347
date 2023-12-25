@@ -1,0 +1,2 @@
+2023-12-25 10:53:01.023 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
+2023-12-25 10:53:08.394 +07:00 [ERR] Exception of type 'Microsoft.Extensions.Hosting.HostFactoryResolver+HostingListener+StopTheHostException' was thrown.
