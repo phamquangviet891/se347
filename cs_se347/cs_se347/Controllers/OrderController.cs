@@ -35,10 +35,17 @@ namespace cs_se347.Controllers
         }
         [HttpGet]
         [Route("getOrdersByUserId")]
-        public async Task<IActionResult> getOrdersByUserId(long userId,int status)
+        public async Task<IActionResult> getOrdersByUserId(long userId,int status=-1)
         {
             return Ok(Program.api_order.getOrdersByUserId(userId,status));
         }
 
+        [HttpGet]
+        [Route("getOrderDetail")]
+        public async Task<IActionResult> get_detail_order(long order_id)
+        {
+            return Ok(Program.api_order.get_detail_order(order_id));
+
+        }
     }
 }
