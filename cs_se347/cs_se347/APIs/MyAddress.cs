@@ -120,5 +120,16 @@ namespace cs_se347.APIs
                 return response;
             }
         }
+        public Address_Short transfer(SqlAddress address)
+        {
+            Address_Short response = new Address_Short();
+            response.address_ID = address.ID;
+            response.ho_va_ten = address.ho_va_ten;
+            response.dia_chi_full = address.dia_chi_detail + ", " + address.phuong_xa + ", " + address.quan_huyen + ", " + address.tinh_thanh_pho;
+            response.so_dien_thoai = address.so_dien_thoai;
+            response.dia_chi_mac_dinh = address.dia_chi_mac_dinh;
+
+            return response;
+        }
     }
 }

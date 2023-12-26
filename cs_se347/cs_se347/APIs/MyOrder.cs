@@ -118,26 +118,7 @@ namespace cs_se347.APIs
             public long total { get; set; }
         }
 
-        public class Detail_Order
-        {
-            public long order_id { get; set; }
-            public string? address { get; set; }
-            public List<Detail_Item_Order>? items { get; set; }
-            public string hinh_thuc_giao_hang { get; set; } = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
-            public string hinh_thuc_thanh_toan { get; set; } = "Thanh toán tiền mặt khi nhận hàng";
-        }
-        public class Detail_Item_Order
-        {
-            public long productPrice { get; set; }
-            public long productSalePrice { get; set; }
-            //
-            public string? productName { get; set; }
-            public string? productImage { get; set; }
-            public string? shop_name { get; set; }
-            public long amount { get; set; }
-            public string? option { get; set; }
-            public int quantity { get; set; }
-        }
+        
         //public string order_get_status(int enum1)
         //{
         //    switch (enum1)
@@ -160,7 +141,7 @@ namespace cs_se347.APIs
             List<Orders_DTO> response = new List<Orders_DTO>();
             using (DataContext context = new DataContext())
             {
-                SqlUser? user = context.users!.Where(s=>s.ID == userId).Include(s=>s.orders).ThenInclude(s=>s.items!).ThenInclude(s => s.shop).FirstOrDefault();
+                SqlUser? user = context.users!.Where(s=>s.ID == userId).Include(s=>s.orders).ThenInclude(s=>s.items!).ThenInclude(s => s.shop).AsNoTracking().FirstOrDefault();
                 if(user == null) { return response; }
                 List<SqlOrder> orders = user!.orders.Where(s => s.status == status).ToList();
                 if (status == -1)
@@ -197,11 +178,55 @@ namespace cs_se347.APIs
             }
             return response;
         }
-
+        public class Detail_Order
+        {
+            public long order_id { get; set; }
+            public Address_Short? address { get; set; }
+            public List<Detail_Item_Order>? items { get; set; }
+            public string hinh_thuc_giao_hang { get; set; } = "Giao vào " + (DateTime.Today.AddDays(2)).ToString("dd/MM");
+            public string hinh_thuc_thanh_toan { get; set; } = "Thanh toán tiền mặt khi nhận hàng";
+        }
+        public class Detail_Item_Order
+        {
+            public long productPrice { get; set; }
+            public long productSalePrice { get; set; }
+            //
+            public string? productName { get; set; }
+            public string? productImage { get; set; }
+            public string? shop_name { get; set; }
+            public long amount { get; set; }
+            public string? option { get; set; }
+            public int quantity { get; set; }
+        }
         public Detail_Order get_detail_order (long order_id)
         {
             Detail_Order response = new Detail_Order();
+            List<Detail_Item_Order>? items= new List<Detail_Item_Order> ();
+            using (DataContext context= new DataContext())
+            {
+                SqlOrder? order = context.orders!.Where(s=>s.ID == order_id).Include(s=>s.items)!.ThenInclude(s=>s.shop).AsNoTracking().FirstOrDefault();
+                response.order_id = order!.ID;
+                response.address = Program.api_address.transfer(JsonConvert.DeserializeObject<SqlAddress>(order.address));
 
+                foreach (SqlOrderItem item in order!.items!)
+                {
+                    foreach(string _item in item.list_cart_item!)
+                    {
+                        SqlCartItem cartItem = JsonConvert.DeserializeObject<SqlCartItem>(_item);
+                        Detail_Item_Order detail_Item_Order = new Detail_Item_Order();
+                        detail_Item_Order.productName = cartItem.product.productName;
+                        detail_Item_Order.productImage = cartItem.product.productImage;
+                        detail_Item_Order.productPrice = cartItem.product.productSalePrice;
+                        detail_Item_Order.quantity = cartItem.quantity;
+                        detail_Item_Order.option= cartItem.option;
+                        detail_Item_Order.productSalePrice= cartItem.product.productSalePrice;
+                        detail_Item_Order.shop_name = cartItem.product.shop.name;
+                        detail_Item_Order.amount = detail_Item_Order.quantity * cartItem.product.productSalePrice;
+                        items.Add(detail_Item_Order);
+                    }
+                }
+                response.items= items;
+            }
             return response;
         }
         //public List<Orders_DTO> getOrdersByUserId(long userId, int status, int page, int page_size)
