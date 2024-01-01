@@ -8,14 +8,15 @@ const createOrder = async (order) => {
 };
 const getOrdersBySatus = async (status) => {
   const userId = localStorage.getItem("id-user");
-  const res = await axios.get("http://localhost:7777/api/Cart/addToCart", {
+  const res = await axios.get("http://localhost:7777/api/Order/getOrdersByUserId", {
     params: {
       userId: +userId,
-      status: +status,
+      status: 0,
       page: 1,
       page_size: 20,
     },
   });
+  console.log(res);
   if (res.status === 200) {
     return res.data;
   }
