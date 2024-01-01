@@ -1,0 +1,2 @@
+1.chạy `npm run build` trước để build ra folder dist
+2.chạy docker compose
